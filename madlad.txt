@@ -1,0 +1,13 @@
+issues to solve:
+	DONE an instant paste into a floatingview browser
+	X not finding it in google
+	X 12 seconds only
+	DONE the least common thing should be the lowest one or else it does not
+		close the browser
+	DONE if there are more than one most common thing we will not close the
+		browser
+
+	DONE two modes selection view
+	X display the selections at the bottom of the browser
+	X if it's 7 seconds left and i haven't clicked one of the two modes it will
+		click the positive one for me
