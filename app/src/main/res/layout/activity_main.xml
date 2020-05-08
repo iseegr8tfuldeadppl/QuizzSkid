@@ -22,7 +22,7 @@
             android:layout_width="match_parent"
             android:onClick="openaccessibilitysettingsClicked"
             android:layout_height="wrap_content"
-            android:text="ACCEPT ACCESSIBILITY PERMISSION"
+            android:text="@string/accept_accessibility_permission"
             android:layout_marginBottom="20dp"/>
 
         <!--Override Huawei Battery Protection-->
@@ -33,7 +33,7 @@
             android:layout_width="match_parent"
             android:onClick="overridebatteryClicked"
             android:layout_height="wrap_content"
-            android:text="OVERRIDE HUAWEI BATTERY PROTECTION"/>
+            android:text="@string/override_huawei_battery_protection"/>
 
     </LinearLayout>
 

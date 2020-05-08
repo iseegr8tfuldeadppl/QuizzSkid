@@ -73,11 +73,11 @@ public class MyAccessibilityService extends AccessibilityService {
             public void run() {
                 Intent intent2 = new Intent(FloatingViewService.NEW_QUESTION_INTENT);
                 Bundle b = new Bundle();
-                b.putString("question", question_data[0]);
-                b.putString("answer1", question_data[1]);
-                b.putString("answer2", question_data[2]);
-                b.putString("answer3", question_data[3]);
-                b.putString("answer4", question_data[4]);
+                b.putString(getString(R.string.question), question_data[0].replace(getString(R.string.slash), " "));
+                b.putString(getString(R.string.answer1), question_data[1]);
+                b.putString(getString(R.string.answer2), question_data[2]);
+                b.putString(getString(R.string.answer3), question_data[3]);
+                b.putString(getString(R.string.answer4), question_data[4]);
                 intent2.putExtras(b);
                 getApplicationContext().sendBroadcast(intent2);
 

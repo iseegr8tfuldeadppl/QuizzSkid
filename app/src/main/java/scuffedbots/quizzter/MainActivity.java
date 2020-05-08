@@ -52,9 +52,8 @@ public class MainActivity extends AppCompatActivity {
     private void permission() {
         if(Build.VERSION.SDK_INT>=23){
             if(!Settings.canDrawOverlays(MainActivity.this)){
-                Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
-                        Uri.parse("package:" + getPackageName()) );
-                startActivityForResult(intent, OVERLAY_PERMISSION);
+                startActivityForResult(new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION, Uri.parse("package:" + getPackageName()))
+                        , OVERLAY_PERMISSION);
             } else {
                 launch();
             }
@@ -73,8 +72,7 @@ public class MainActivity extends AppCompatActivity {
 
 
     public void openaccessibilitysettingsClicked(View view) {
-        Intent intent = new Intent(android.provider.Settings.ACTION_ACCESSIBILITY_SETTINGS);
-        startActivityForResult(intent, 0);
+        startActivityForResult(new Intent(android.provider.Settings.ACTION_ACCESSIBILITY_SETTINGS), 0);
     }
 
     public void overridebatteryClicked(View view) {

@@ -21,7 +21,6 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
-import android.webkit.ValueCallback;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.FrameLayout;
@@ -57,6 +56,8 @@ public class FloatingViewService extends Service{
     private String[] answers = {null, null, null, null};
     private WebView browser;
     private TextView question, timestamps;
+    private List<TextView> answerdisplays = new ArrayList<>();
+    private List<TextView> countdisplays = new ArrayList<>();
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -104,10 +105,10 @@ public class FloatingViewService extends Service{
     private List<String> get_all_links_from_this_google_search(Document document) {
         List<String> links = new ArrayList<>();
         //Get the logo source of the website
-        Elements linkHolders = document.select("div");
+        Elements linkHolders = document.select(getString(R.string.div));
         for(Element linkHolder:linkHolders){
-            if(linkHolder.className().equals("g")){
-                String link = linkHolder.selectFirst("a").absUrl("href");
+            if(linkHolder.className().equals(getString(R.string.g))){
+                String link = linkHolder.selectFirst(getString(R.string.a)).absUrl(getString(R.string.href));
                 if(not_a_link_we_dont_want(link)){
                     links.add(link);
                 }
@@ -126,8 +127,8 @@ public class FloatingViewService extends Service{
     }
 
     private boolean not_a_link_we_dont_want(String link) {
-        return !(link.contains("youtube.") || link.contains("dailymotion.") || link.contains("facebook.")
-                || link.contains("fb.com"));
+        return !(link.contains(getString(R.string.youtube)) || link.contains(getString(R.string.dailymotion)) || link.contains(getString(R.string.facebook))
+                || link.contains(getString(R.string.facebook2)));
     }
 
     private void start_countdown() {
@@ -157,7 +158,7 @@ public class FloatingViewService extends Service{
     private void trigger_update_timestamp(int span) {
         Message msg = new Message();
         Bundle b = new Bundle();
-        b.putString("timestamp", (11-span) + "s");
+        b.putString(getString(R.string.timestamp), (11-span) + getString(R.string.s));
         msg.setData(b);
         update_timestamp.sendMessage(msg);
     }
@@ -190,18 +191,8 @@ public class FloatingViewService extends Service{
         createBroadcastReceiver();
         setOnClickListeners();
         /*DONT DELETE ME*/page_load_ensurance();
-        /*tests();*/
     }
 
-    private void tests() {
-        answers[0] = "blue";
-        answers[1] = "red";
-        answers[2] = "green";
-        answers[3] = "yellow";
-        mWindowManager.addView(FloatingView, LayoutParams);
-        browser.loadUrl("https://www.google.com/search?q=what is the color of the sun?");
-        extra_scraper("https://www.google.com/search?q=what is the color of the sun?");
-    }
 
     private void page_load_ensurance() {
         browser.setWebViewClient(new WebViewClient() {
@@ -233,12 +224,6 @@ public class FloatingViewService extends Service{
                 print(least_common);
             }
 
-            if(only_one_ranking_ability){
-                only_one_ranking_ability = false;
-                color_most_common(most_common);
-                color_least_common(least_common);
-            }
-
             if(intentnig==null)
                 return;
 
@@ -249,7 +234,7 @@ public class FloatingViewService extends Service{
     private void color_most_common(int most_common) {
         Message msg = new Message();
         Bundle b = new Bundle();
-        b.putInt("most_common", most_common);
+        b.putInt(getString(R.string.most_common), most_common);
         msg.setData(b);
         color_most_common.sendMessage(msg);
     }
@@ -257,7 +242,7 @@ public class FloatingViewService extends Service{
     private void color_least_common(int least_common) {
         Message msg = new Message();
         Bundle b = new Bundle();
-        b.putInt("least_common", least_common);
+        b.putInt(getString(R.string.least_common), least_common);
         msg.setData(b);
         color_least_common.sendMessage(msg);
     }
@@ -274,8 +259,8 @@ public class FloatingViewService extends Service{
             index ++;
             Message msg = new Message();
             Bundle b = new Bundle();
-            b.putInt("occurances", count);
-            b.putInt("answer", index);
+            b.putInt(getString(R.string.occurrences), count);
+            b.putInt(getString(R.string.answer), index);
             msg.setData(b);
             update_count.sendMessage(msg);
         }
@@ -294,7 +279,7 @@ public class FloatingViewService extends Service{
         for(int i=0; i<4; i++)
             answerdisplays.get(i).setText(answers[i]);
 
-        questiono = "https://www.google.com/search?q=" + questiono;
+        questiono = getString(R.string.google_search_prefix) + questiono;
         extra_scraper(questiono);
         browser.loadUrl(questiono);
         return questiono;
@@ -374,7 +359,7 @@ public class FloatingViewService extends Service{
             String[] answersplitbyspaces = answers[i].split(" ");
             answers[i] = "";
             for(String string: answersplitbyspaces){
-                if(String.valueOf(string.charAt(0)).equals("ا") && String.valueOf(string.charAt(1)).equals("ل")){
+                if(String.valueOf(string.charAt(0)).equals(getString(R.string.alif)) && String.valueOf(string.charAt(1)).equals(getString(R.string.lam))){
                     string = string.substring(2);
                 }
                 answers[i] += string + " ";
@@ -394,7 +379,7 @@ public class FloatingViewService extends Service{
     private void print(Object log) {
         Message msg = new Message();
         Bundle b = new Bundle();
-        b.putString("log", String.valueOf(log));
+        b.putString(getString(R.string.log), String.valueOf(log));
         msg.setData(b);
         print.sendMessage(msg);
     }
@@ -402,18 +387,15 @@ public class FloatingViewService extends Service{
     private String getBundleExtras(Intent intent) {
         Bundle b = intent.getExtras();
         if (b != null) {
-            /*display.setText(b.getString("question"));*/
-            answers[0] = b.getString("answer1");
-            answers[1] = b.getString("answer2");
-            answers[2] = b.getString("answer3");
-            answers[3] = b.getString("answer4");
-            return b.getString("question");
+            answers[0] = b.getString(getString(R.string.answer1));
+            answers[1] = b.getString(getString(R.string.answer2));
+            answers[2] = b.getString(getString(R.string.answer3));
+            answers[3] = b.getString(getString(R.string.answer4));
+            return b.getString(getString(R.string.question));
         }
-        return "nigga";
+        return "";
     }
 
-    private List<TextView> answerdisplays = new ArrayList<>();
-    private List<TextView> countdisplays = new ArrayList<>();
     private void setOnClickListeners() {
         countdisplays.add((TextView) FloatingView.findViewById(R.id.acount));
         countdisplays.add((TextView) FloatingView.findViewById(R.id.bcount));
@@ -443,19 +425,17 @@ public class FloatingViewService extends Service{
         }
     }
 
-    private boolean only_one_ranking_ability = true;
     private void clear() {
         intentnig = null;
-        only_one_ranking_ability = true;
 
-        int black = getDatColor(R.color.black);
         for(TextView countdisplay:countdisplays){
-            countdisplay.setTextColor(black);
-            countdisplay.setText("0");
+            countdisplay.setText(getString(R.string._0));
         }
 
+        int black = getDatColor(R.color.black);
         int white = getDatColor(R.color.white);
         for(TextView answerdisplay:answerdisplays){
+            answerdisplay.setTextColor(black);
             answerdisplay.setBackgroundColor(white);
         }
 
@@ -478,8 +458,8 @@ public class FloatingViewService extends Service{
 
     @RequiresApi(api = O)
     private void createOwnNotificationChannel() {
-        String NOTIFICATION_CHANNEL_ID = "scuffedbots.quizzter";
-        String channelName = "QuizzterChannel";
+        String NOTIFICATION_CHANNEL_ID = getString(R.string.channel_id);
+        String channelName = getString(R.string.channel_name);
         NotificationChannel chan = new NotificationChannel(NOTIFICATION_CHANNEL_ID, channelName, NotificationManager.IMPORTANCE_NONE);
         chan.setLightColor(Color.BLUE);
         chan.setLockscreenVisibility(Notification.VISIBILITY_PRIVATE);
@@ -497,7 +477,7 @@ public class FloatingViewService extends Service{
 
         builder = builder.setOngoing(true)
                 .setSmallIcon(R.mipmap.ic_launcher)
-                .setContentTitle("Quizzter is on");
+                .setContentTitle(getString(R.string.notification_title));
 
         if (SDK_INT >= Build.VERSION_CODES.N) {
             builder.setPriority(NotificationManager.IMPORTANCE_HIGH);
@@ -580,31 +560,73 @@ public class FloatingViewService extends Service{
     private Handler update_count = new Handler(new Handler.Callback() {
         @Override
         public boolean handleMessage(@NonNull Message msg) {
-            int answer = msg.getData().getInt("answer");
-            int occurances = msg.getData().getInt("occurances");
+            int answer = msg.getData().getInt(getString(R.string.answer));
+            int occurances = msg.getData().getInt(getString(R.string.occurrences));
             if(intentnig!=null){
                 String count = countdisplays.get(answer).getText().toString();
-                if(!count.contains("(")){
-                    if(count.equals("0")){
+                if(!count.contains(getString(R.string.kaws2))){
+                    if(count.equals(getString(R.string._0))){
                         countdisplays.get(answer).setText(String.valueOf(occurances));
                     } else {
-                        String f = occurances + "(" + count + ")";
+                        String f = occurances + getString(R.string.kaws2) + count + getString(R.string.kaws3);
                         countdisplays.get(answer).setText(f);
                     }
                 } else {
-                    String[] splitted = count.split("\\(");
-                    String f = (occurances+Integer.parseInt(splitted[0])) + "(" + splitted[1];
+                    String[] splitted = count.split(getString(R.string.kaws));
+                    String f = (occurances+Integer.parseInt(splitted[0])) + getString(R.string.kaws2) + splitted[1];
                     countdisplays.get(answer).setText(f);
                 }
+
+                int[] total_for_each_answer = get_total_for_each_answer();
+                int largest = get_largest(total_for_each_answer);
+                int tiniest = get_tiniest(total_for_each_answer);
+
+                color_most_common(largest);
+                color_least_common(tiniest);
             } else {
                 hide_main_page();
             }
             return true; }});
 
+    private int get_tiniest(int[] total_for_each_answer) {
+        int tiniest = total_for_each_answer[0];
+        for(int i=1; i<total_for_each_answer.length; i++){
+            if(total_for_each_answer[i]>=tiniest){
+                tiniest = total_for_each_answer[i];
+            }
+        }
+        return tiniest;
+    }
+
+    private int get_largest(int[] total_for_each_answer) {
+        int largest = total_for_each_answer[0];
+        for(int i=1; i<total_for_each_answer.length; i++){
+            if(total_for_each_answer[i]>=largest){
+                largest = total_for_each_answer[i];
+            }
+        }
+        return largest;
+    }
+
+    private int[] get_total_for_each_answer() {
+        int[] bruh = {0,0,0,0};
+        int index = -1;
+        for(TextView countdisplay:countdisplays){
+            index ++;
+            String text = countdisplay.getText().toString();
+            if(text.contains(getString(R.string.kaws2))){
+                bruh[index] = Integer.parseInt(text.split(getString(R.string.kaws2))[0]);
+            } else {
+                bruh[index] = Integer.parseInt(text);
+            }
+        }
+        return bruh;
+    }
+
     private Handler color_most_common = new Handler(new Handler.Callback() {
         @Override
         public boolean handleMessage(@NonNull Message msg) {
-            int most_common = msg.getData().getInt("most_common");
+            int most_common = msg.getData().getInt(getString(R.string.most_common));
             if(intentnig!=null){
                 answerdisplays.get(most_common-1).setBackgroundColor(getDatColor(R.color.green));
             } else {
@@ -615,7 +637,7 @@ public class FloatingViewService extends Service{
     private Handler color_least_common = new Handler(new Handler.Callback() {
         @Override
         public boolean handleMessage(@NonNull Message msg) {
-            int least_common = msg.getData().getInt("least_common");
+            int least_common = msg.getData().getInt(getString(R.string.least_common));
             if(intentnig!=null){
                 answerdisplays.get(least_common-1).setBackgroundColor(getDatColor(R.color.red));
                 answerdisplays.get(least_common-1).setTextColor(getDatColor(R.color.white));
@@ -646,14 +668,14 @@ public class FloatingViewService extends Service{
     private Handler update_timestamp = new Handler(new Handler.Callback() {
         @Override
         public boolean handleMessage(@NonNull Message msg) {
-            String timestamp = msg.getData().getString("timestamp");
+            String timestamp = msg.getData().getString(getString(R.string.timestamp));
             update_timestamp(timestamp);
             return true; }});
 
     private Handler print = new Handler(new Handler.Callback() {
         @Override
         public boolean handleMessage(@NonNull Message msg) {
-            String log = msg.getData().getString("log");
+            String log = msg.getData().getString(getString(R.string.log));
             Toast.makeText(context, log, Toast.LENGTH_LONG).show();
             return true; }});
 

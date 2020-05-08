@@ -35,7 +35,6 @@
             android:textSize="@dimen/question_text_size"
             android:paddingTop="@dimen/question_and_answers_top_n_bottom_paddings"
             android:paddingBottom="@dimen/question_and_answers_top_n_bottom_paddings"
-            android:text="@string/question"
             android:gravity="center"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
