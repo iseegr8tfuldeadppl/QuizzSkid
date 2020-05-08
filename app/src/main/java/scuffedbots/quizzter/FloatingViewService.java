@@ -290,6 +290,19 @@ public class FloatingViewService extends Service{
             answerdisplays.get(i).setText(answers[i]);
 
         questiono = getString(R.string.google_search_prefix) + questiono;
+        for(int i=0; i<4; i++){
+            questiono += " " + answers[i];
+        }
+        try{
+            double test = Double.parseDouble(answers[0]);
+            for(TextView answerdisplay:answerdisplays)
+                answerdisplay.setGravity(Gravity.CENTER);
+            print("number answers");
+        } catch(Exception ignored){
+            for(TextView answerdisplay:answerdisplays)
+                answerdisplay.setGravity(Gravity.START);
+            Log.i("HH", "is not a number");
+        };
         extra_scraper(questiono);
         browser.loadUrl(questiono);
         return questiono;
