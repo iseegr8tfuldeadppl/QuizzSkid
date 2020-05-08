@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">Quizzter</string>
+    <string name="huaweisource">com.huawei.systemmanager</string>
+    <string name="huaweiactivity">com.huawei.systemmanager.optimize.process.ProtectActivity</string>
+    <string name="question">Question</string>
+    <string name="close">CLOSE</string>
+    <string name="_0">0</string>
 </resources>

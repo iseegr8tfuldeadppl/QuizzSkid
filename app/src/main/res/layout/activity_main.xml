@@ -1,19 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    tools:context=".MainActivity"
+    android:background="@android:color/black">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:onClick="openaccessibilitysettingsClicked"
+    <LinearLayout
+        android:gravity="center"
+        android:layout_gravity="center"
+        android:layout_marginStart="@dimen/main_activity_button_holder_side_margins"
+        android:layout_marginEnd="@dimen/main_activity_button_holder_side_margins"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Hello World!"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:orientation="vertical">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <!--Accept Accessibility Permission-->
+        <Button
+            android:textColor="@android:color/black"
+            android:background="@android:color/white"
+            android:layout_width="match_parent"
+            android:onClick="openaccessibilitysettingsClicked"
+            android:layout_height="wrap_content"
+            android:text="ACCEPT ACCESSIBILITY PERMISSION"
+            android:layout_marginBottom="20dp"/>
+
+        <!--Override Huawei Battery Protection-->
+        <Button
+            android:textColor="@android:color/black"
+            android:background="@android:color/white"
+            android:id="@+id/overridehuaweipermission"
+            android:layout_width="match_parent"
+            android:onClick="overridebatteryClicked"
+            android:layout_height="wrap_content"
+            android:text="OVERRIDE HUAWEI BATTERY PROTECTION"/>
+
+    </LinearLayout>
+
+</FrameLayout>

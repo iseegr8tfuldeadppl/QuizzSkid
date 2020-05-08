@@ -2,21 +2,15 @@ package scuffedbots.quizzter;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-
-import android.accessibilityservice.AccessibilityService;
+import android.content.ComponentName;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
-import android.util.Log;
 import android.view.View;
-
-import java.lang.reflect.AccessibleObject;
-
 import scuffedbots.quizzter.Debugging.TopExceptionHandler;
 
-import static scuffedbots.quizzter.FloatingViewService.SHOW_LAYOUT_INTENT;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -28,7 +22,23 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Thread.setDefaultUncaughtExceptionHandler(new TopExceptionHandler());
 
+        if (!is_huawei())
+            findViewById(R.id.overridehuaweipermission).setVisibility(View.GONE);
+
         permission();
+    }
+
+    private boolean is_huawei() {
+        return "huawei".equalsIgnoreCase(android.os.Build.MANUFACTURER);
+    }
+
+    private void protected_apps_request() {
+        try{
+            Intent intent = new Intent();
+            intent.setComponent(new ComponentName(getString(R.string.huaweisource), getString(R.string.huaweiactivity)));
+            startActivity(intent);
+        }
+        catch(Exception ignored){}
     }
 
     private void launch(){
@@ -65,5 +75,9 @@ public class MainActivity extends AppCompatActivity {
     public void openaccessibilitysettingsClicked(View view) {
         Intent intent = new Intent(android.provider.Settings.ACTION_ACCESSIBILITY_SETTINGS);
         startActivityForResult(intent, 0);
+    }
+
+    public void overridebatteryClicked(View view) {
+        protected_apps_request();
     }
 }
