@@ -52,14 +52,11 @@ public class FloatingViewService extends Service{
     private Context context;
     private View FloatingView;
     private boolean addedview = false,
-            running = true,
-            most_common_true_least_common_false = true;
+            running = true;
     private Intent intentnig;
     private String[] answers = {null, null, null, null};
     private WebView browser;
-    private TextView a, b, c, d,
-                     acount, bcount, ccount, dcount,
-                     question, timestamps;
+    private TextView question, timestamps;
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -140,7 +137,7 @@ public class FloatingViewService extends Service{
                 running = true;
                 int start_second = Integer.parseInt((new Date()).toString().split(" ")[3].split(":")[2]);
                 int span;
-                while(running){
+                while(running && intentnig!=null){
                     wait_1_second();
                     span = calculate_span(start_second);
                     if(span>=11) running = false;
@@ -224,15 +221,45 @@ public class FloatingViewService extends Service{
         int[] counts = count_occurances_of_the_answers_in_google_by_splitting_their_words_for_more_accuracy(html);
 
         if(!all_zero(counts)){
-            int most_or_least_common = find_most_common_or_least_common(counts);
-            List<Occurance> occurancehandler = new ArrayList<>();
-            boolean unique = if_other_answers_appear_the_same_amount_then_add_them_into_array(occurancehandler, counts, most_or_least_common);
+            int most_common = find_most_common(counts);
+            boolean unique = is_it_the_only_non_zero(counts, most_common);
+            if(unique){
+                print(most_common);
+            }
 
-            if(unique && intentnig!=null)
-                print(most_or_least_common+1);
+            int least_common = find_least_common(counts);
+            unique = is_it_the_only_zero(counts, most_common);
+            if(unique){
+                print(least_common);
+            }
 
-            display_occurances(occurancehandler);
+            if(only_one_ranking_ability){
+                only_one_ranking_ability = false;
+                color_most_common(most_common);
+                color_least_common(least_common);
+            }
+
+            if(intentnig==null)
+                return;
+
+            display_occurances(counts);
         }
+    }
+
+    private void color_most_common(int most_common) {
+        Message msg = new Message();
+        Bundle b = new Bundle();
+        b.putInt("most_common", most_common);
+        msg.setData(b);
+        color_most_common.sendMessage(msg);
+    }
+
+    private void color_least_common(int least_common) {
+        Message msg = new Message();
+        Bundle b = new Bundle();
+        b.putInt("least_common", least_common);
+        msg.setData(b);
+        color_least_common.sendMessage(msg);
     }
 
     private void remove_unwanted_characters_from_answers() {
@@ -241,12 +268,14 @@ public class FloatingViewService extends Service{
         }
     }
 
-    private void display_occurances(List<Occurance> occurancehandler) {
-        for(Occurance occurance:occurancehandler){
+    private void display_occurances(int[] counts) {
+        int index = -1;
+        for(int count:counts){
+            index ++;
             Message msg = new Message();
             Bundle b = new Bundle();
-            b.putInt("answer", occurance.answer);
-            b.putInt("occurances", occurance.occurances);
+            b.putInt("occurances", count);
+            b.putInt("answer", index);
             msg.setData(b);
             update_count.sendMessage(msg);
         }
@@ -260,23 +289,15 @@ public class FloatingViewService extends Service{
 
         String questiono = getBundleExtras(intentnig);
         question.setText(questiono);
-        a.setText(answers[0]);
-        b.setText(answers[1]);
-        c.setText(answers[2]);
-        d.setText(answers[3]);
+
+        // display answers
+        for(int i=0; i<4; i++)
+            answerdisplays.get(i).setText(answers[i]);
 
         questiono = "https://www.google.com/search?q=" + questiono;
         extra_scraper(questiono);
         browser.loadUrl(questiono);
         return questiono;
-    }
-
-    private int find_most_common_or_least_common(int[] counts) {
-        if(most_common_true_least_common_false){
-            return find_most_common(counts);
-        } else {
-            return find_least_common(counts);
-        }
     }
 
     private int find_least_common(int[] counts) {
@@ -286,7 +307,7 @@ public class FloatingViewService extends Service{
                 most_or_least_common = i;
             }
         }
-        return most_or_least_common;
+        return most_or_least_common+1;
     }
 
     private int find_most_common(int[] counts) {
@@ -296,29 +317,9 @@ public class FloatingViewService extends Service{
                 most_or_least_common = i;
             }
         }
-        return most_or_least_common;
+        return most_or_least_common+1;
     }
 
-    private boolean if_other_answers_appear_the_same_amount_then_add_them_into_array(List<Occurance> occurancehandler, int[] counts, int most_common) {
-
-        // are all others zero or all others absolutely inoccurant, if so then unique
-        boolean unique;
-        if(most_common_true_least_common_false){
-            unique = is_it_the_only_non_zero(counts, most_common);
-        } else {
-            unique = is_it_the_only_zero(counts, most_common);
-        }
-
-        for(int i=0; i<counts.length; i++){
-            if(counts[i]!=0){
-                Occurance occurance = new Occurance();
-                occurance.answer = i;
-                occurance.occurances = counts[i];
-                occurancehandler.add(occurance);
-            }
-        }
-        return unique;
-    }
 
     private boolean is_it_the_only_zero(int[] counts, int most_common) {
         for(int i=0; i<counts.length; i++){
@@ -411,15 +412,17 @@ public class FloatingViewService extends Service{
         return "nigga";
     }
 
+    private List<TextView> answerdisplays = new ArrayList<>();
+    private List<TextView> countdisplays = new ArrayList<>();
     private void setOnClickListeners() {
-        acount = FloatingView.findViewById(R.id.acount);
-        bcount = FloatingView.findViewById(R.id.bcount);
-        ccount = FloatingView.findViewById(R.id.ccount);
-        dcount = FloatingView.findViewById(R.id.dcount);
-        a = FloatingView.findViewById(R.id.a);
-        b = FloatingView.findViewById(R.id.b);
-        c = FloatingView.findViewById(R.id.c);
-        d = FloatingView.findViewById(R.id.d);
+        countdisplays.add((TextView) FloatingView.findViewById(R.id.acount));
+        countdisplays.add((TextView) FloatingView.findViewById(R.id.bcount));
+        countdisplays.add((TextView) FloatingView.findViewById(R.id.ccount));
+        countdisplays.add((TextView) FloatingView.findViewById(R.id.dcount));
+        answerdisplays.add((TextView) FloatingView.findViewById(R.id.a));
+        answerdisplays.add((TextView) FloatingView.findViewById(R.id.b));
+        answerdisplays.add((TextView) FloatingView.findViewById(R.id.c));
+        answerdisplays.add((TextView) FloatingView.findViewById(R.id.d));
         question = FloatingView.findViewById(R.id.question);
         timestamps = FloatingView.findViewById(R.id.timestamps);
         browser = FloatingView.findViewById(R.id.browser);
@@ -433,13 +436,36 @@ public class FloatingViewService extends Service{
     }
 
     private void hide_main_page() {
+        clear();
+        if(addedview){
+            mWindowManager.removeView(FloatingView);
+            addedview = false;
+        }
+    }
+
+    private boolean only_one_ranking_ability = true;
+    private void clear() {
         intentnig = null;
-        acount.setText("0");
-        bcount.setText("0");
-        ccount.setText("0");
-        dcount.setText("0");
-        mWindowManager.removeView(FloatingView);
-        addedview = false;
+        only_one_ranking_ability = true;
+
+        int black = getDatColor(R.color.black);
+        for(TextView countdisplay:countdisplays){
+            countdisplay.setTextColor(black);
+            countdisplay.setText("0");
+        }
+
+        int white = getDatColor(R.color.white);
+        for(TextView answerdisplay:answerdisplays){
+            answerdisplay.setBackgroundColor(white);
+        }
+
+    }
+
+    private int getDatColor(int black) {
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M)
+            return getColor(black);
+        else
+            return getResources().getColor(black);
     }
 
     private void createNotification() {
@@ -489,7 +515,11 @@ public class FloatingViewService extends Service{
             public boolean dispatchKeyEvent(KeyEvent event) {
                 if (event.getKeyCode()==KeyEvent.KEYCODE_BACK) {
                     // handle the back button code;
-                    hide_main_page();
+                    if(browser.canGoBack()){
+                        browser.goBack();
+                    } else {
+                        hide_main_page();
+                    }
                     return true;
                 } else if(event.getKeyCode()==KeyEvent.KEYCODE_HOME){
                     hide_main_page();
@@ -537,9 +567,10 @@ public class FloatingViewService extends Service{
             if(action!=null){
                 if(action.equals(NEW_QUESTION_INTENT)) {
                     if(intentnig==null){
+                        clear();
                         intentnig = intent;
-                        extra_scraper(launch_main());
                         start_countdown();
+                        extra_scraper(launch_main());
                     }
                 }
             }
@@ -552,65 +583,65 @@ public class FloatingViewService extends Service{
             int answer = msg.getData().getInt("answer");
             int occurances = msg.getData().getInt("occurances");
             if(intentnig!=null){
-                if(answer==0){
-                String count = acount.getText().toString();
+                String count = countdisplays.get(answer).getText().toString();
                 if(!count.contains("(")){
                     if(count.equals("0")){
-                        acount.setText(String.valueOf(occurances));
+                        countdisplays.get(answer).setText(String.valueOf(occurances));
                     } else {
                         String f = occurances + "(" + count + ")";
-                        acount.setText(f);
+                        countdisplays.get(answer).setText(f);
                     }
                 } else {
                     String[] splitted = count.split("\\(");
                     String f = (occurances+Integer.parseInt(splitted[0])) + "(" + splitted[1];
-                    acount.setText(f);
+                    countdisplays.get(answer).setText(f);
                 }
-                } else if(answer==1){
-                    String count = bcount.getText().toString();
-                    if(!count.contains("(")){
-                        if(count.equals("0")){
-                            bcount.setText(String.valueOf(occurances));
-                        } else {
-                            String f = occurances + "(" + count + ")";
-                            bcount.setText(f);
-                        }
-                    } else {
-                        String[] splitted = count.split("\\(");
-                        String f = (occurances+Integer.parseInt(splitted[0])) + "(" + splitted[1];
-                        bcount.setText(f);
-                    }
-                } else if(answer==2){
-                    String count = ccount.getText().toString();
-                    if(!count.contains("(")){
-                        if(count.equals("0")){
-                            ccount.setText(String.valueOf(occurances));
-                        } else {
-                            String f = occurances + "(" + count + ")";
-                            ccount.setText(f);
-                        }
-                    } else {
-                        String[] splitted = count.split("\\(");
-                        String f = (occurances+Integer.parseInt(splitted[0])) + "(" + splitted[1];
-                        ccount.setText(f);
-                    }
-                } else if(answer==3){
-                    String count = dcount.getText().toString();
-                    if(!count.contains("(")){
-                        if(count.equals("0")){
-                            dcount.setText(String.valueOf(occurances));
-                        } else {
-                            String f = occurances + "(" + count + ")";
-                            dcount.setText(f);
-                        }
-                    } else {
-                        String[] splitted = count.split("\\(");
-                        String f = (occurances+Integer.parseInt(splitted[0])) + "(" + splitted[1];
-                        dcount.setText(f);
-                    }
-                }
+            } else {
+                hide_main_page();
             }
             return true; }});
+
+    private Handler color_most_common = new Handler(new Handler.Callback() {
+        @Override
+        public boolean handleMessage(@NonNull Message msg) {
+            int most_common = msg.getData().getInt("most_common");
+            if(intentnig!=null){
+                answerdisplays.get(most_common-1).setBackgroundColor(getDatColor(R.color.green));
+            } else {
+                hide_main_page();
+            }
+            return true; }});
+
+    private Handler color_least_common = new Handler(new Handler.Callback() {
+        @Override
+        public boolean handleMessage(@NonNull Message msg) {
+            int least_common = msg.getData().getInt("least_common");
+            if(intentnig!=null){
+                answerdisplays.get(least_common-1).setBackgroundColor(getDatColor(R.color.red));
+                answerdisplays.get(least_common-1).setTextColor(getDatColor(R.color.white));
+            } else {
+                clear();
+            }
+            return true; }});
+
+    private void log(Object log){
+        Log.i("HH", String.valueOf(log));
+    }
+    private void logAll() {
+        log("addedview " + addedview);
+        log("running " + running);
+        log("intentnig " + intentnig);
+        log("question " + question.getText().toString());
+        log("answers[0] " + answers[0]);
+        log("answers[1] " + answers[1]);
+        log("answers[2] " + answers[2]);
+        log("answers[3] " + answers[3]);
+        log("acount " + countdisplays.get(0).getText().toString());
+        log("bcount " + countdisplays.get(1).getText().toString());
+        log("ccount " + countdisplays.get(2).getText().toString());
+        log("dcount " + countdisplays.get(3).getText().toString());
+
+    }
 
     private Handler update_timestamp = new Handler(new Handler.Callback() {
         @Override
@@ -626,8 +657,4 @@ public class FloatingViewService extends Service{
             Toast.makeText(context, log, Toast.LENGTH_LONG).show();
             return true; }});
 
-    public static class Occurance {
-        int answer;
-        int occurances;
-    }
 }
