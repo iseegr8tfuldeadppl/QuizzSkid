@@ -5,7 +5,6 @@ import android.accessibilityservice.AccessibilityServiceInfo;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityNodeInfo;
 
@@ -38,7 +37,7 @@ public class MyAccessibilityService extends AccessibilityService {
     }
 
     private boolean is_anew_question(String text) {
-        if(text.equals("12s")){
+        if(text.equals(getString(R.string.twelve))){
             start_recording_data = true;
             index = 0;
             return true;
@@ -64,7 +63,7 @@ public class MyAccessibilityService extends AccessibilityService {
         /*Log.i("HH", event.toString());*/
         /*Log.i("HH", source.toString());*/
         /*int level = source.getChildCount();*/
-        return source.getClassName().equals("android.widget.TextView") && source.getText()!=null && !source.getText().toString().isEmpty();
+        return source.getClassName().equals(getString(R.string.textview_package)) && source.getText()!=null && !source.getText().toString().isEmpty();
     }
 
     private void send_newquestion() {
@@ -105,7 +104,7 @@ public class MyAccessibilityService extends AccessibilityService {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             info.eventTypes |= AccessibilityEvent.TYPE_WINDOWS_CHANGED;
         }
-        info.packageNames = new String[]{"com.elquiz.app.prod"};
+        info.packageNames = new String[]{getString(R.string.target_package)};
         info.feedbackType = AccessibilityServiceInfo.FEEDBACK_GENERIC;
         info.flags = AccessibilityServiceInfo.DEFAULT;
         info.notificationTimeout = 0;

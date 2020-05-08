@@ -10,6 +10,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Color;
 import android.graphics.PixelFormat;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -83,17 +84,21 @@ public class FloatingViewService extends Service{
             @Override
             public void run() {
                 try {
-                    Document document = Jsoup.connect(question_link).get();
+                    String[] prefixes = { "", " wikipedia "};
+                    for(String prefix:prefixes){
+                        Document document = Jsoup.connect(question_link + prefix).get();
 
-                    treat_this_html(document.body().text());
+                        treat_this_html(document.body().text());
 
-                    List<String> links = get_all_links_from_this_google_search(document);
+                        List<String> links = get_all_links_from_this_google_search(document);
 
-                    for(String link:links) {
-                        if(intentnig!=null)
-                            other_page_scraper(link);
-                        else
-                            break;
+                        for(String link:links) {
+                            Log.i("HH", link);
+                            if(intentnig!=null)
+                                other_page_scraper(link);
+                            else
+                                return;
+                        }
                     }
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -141,7 +146,7 @@ public class FloatingViewService extends Service{
                 while(running && intentnig!=null){
                     wait_1_second();
                     span = calculate_span(start_second);
-                    if(span>=11) running = false;
+                    if(span>=12) running = false;
                     else trigger_update_timestamp(span);
                 }
             }
@@ -158,7 +163,7 @@ public class FloatingViewService extends Service{
     private void trigger_update_timestamp(int span) {
         Message msg = new Message();
         Bundle b = new Bundle();
-        b.putString(getString(R.string.timestamp), (11-span) + getString(R.string.s));
+        b.putString(getString(R.string.timestamp), (12-span) + getString(R.string.s));
         msg.setData(b);
         update_timestamp.sendMessage(msg);
     }
@@ -182,8 +187,13 @@ public class FloatingViewService extends Service{
     @Override
     public void onCreate() {
         super.onCreate();
+
+        // you need to save context from here
         context = this;
+
+        // debugging tool
         Thread.setDefaultUncaughtExceptionHandler(new TopExceptionHandler());
+
         createNotification();
         createWindowManager();
         createLayoutParams();
@@ -428,15 +438,19 @@ public class FloatingViewService extends Service{
     private void clear() {
         intentnig = null;
 
+        int black = getDatColor(R.color.black);
         for(TextView countdisplay:countdisplays){
+            countdisplay.setTextColor(black);
+            setDrawable(countdisplay, R.drawable.white);
             countdisplay.setText(getString(R.string._0));
         }
 
-        int black = getDatColor(R.color.black);
-        int white = getDatColor(R.color.white);
+        int index = -1;
         for(TextView answerdisplay:answerdisplays){
+            index ++;
+            its_background[index] = 2;
             answerdisplay.setTextColor(black);
-            answerdisplay.setBackgroundColor(white);
+            setDrawable(answerdisplay, R.drawable.white);
         }
 
     }
@@ -589,20 +603,20 @@ public class FloatingViewService extends Service{
             return true; }});
 
     private int get_tiniest(int[] total_for_each_answer) {
-        int tiniest = total_for_each_answer[0];
+        int tiniest = 0;
         for(int i=1; i<total_for_each_answer.length; i++){
-            if(total_for_each_answer[i]>=tiniest){
-                tiniest = total_for_each_answer[i];
+            if(total_for_each_answer[i]<=total_for_each_answer[tiniest]){
+                tiniest = i;
             }
         }
         return tiniest;
     }
 
     private int get_largest(int[] total_for_each_answer) {
-        int largest = total_for_each_answer[0];
+        int largest = 0;
         for(int i=1; i<total_for_each_answer.length; i++){
-            if(total_for_each_answer[i]>=largest){
-                largest = total_for_each_answer[i];
+            if(total_for_each_answer[i]>=total_for_each_answer[largest]){
+                largest = i;
             }
         }
         return largest;
@@ -615,7 +629,7 @@ public class FloatingViewService extends Service{
             index ++;
             String text = countdisplay.getText().toString();
             if(text.contains(getString(R.string.kaws2))){
-                bruh[index] = Integer.parseInt(text.split(getString(R.string.kaws2))[0]);
+                bruh[index] = Integer.parseInt(text.split(getString(R.string.kaws))[0]);
             } else {
                 bruh[index] = Integer.parseInt(text);
             }
@@ -628,24 +642,77 @@ public class FloatingViewService extends Service{
         public boolean handleMessage(@NonNull Message msg) {
             int most_common = msg.getData().getInt(getString(R.string.most_common));
             if(intentnig!=null){
-                answerdisplays.get(most_common-1).setBackgroundColor(getDatColor(R.color.green));
+                its_background[most_common] = 0;
+                answerdisplays.get(most_common).setTextColor(getDatColor(R.color.black));
+                countdisplays.get(most_common).setTextColor(getDatColor(R.color.black));
+                setDrawable(answerdisplays.get(most_common), R.drawable.green);
+                setDrawable(countdisplays.get(most_common), R.drawable.green);
+                reset_the_other_greens(most_common);
             } else {
                 hide_main_page();
             }
             return true; }});
+
+
+    private void setDrawable(TextView textView, int green) {
+        if (SDK_INT >= Build.VERSION_CODES.JELLY_BEAN)
+            textView.setBackground(getDatDrawable(green));
+        else
+            textView.setBackgroundDrawable(getDatDrawable(green));
+    }
+
+    private Drawable getDatDrawable(int green) {
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M)
+            return getDrawable(green);
+        else
+            return getResources().getDrawable(green);
+    }
 
     private Handler color_least_common = new Handler(new Handler.Callback() {
         @Override
         public boolean handleMessage(@NonNull Message msg) {
             int least_common = msg.getData().getInt(getString(R.string.least_common));
             if(intentnig!=null){
-                answerdisplays.get(least_common-1).setBackgroundColor(getDatColor(R.color.red));
-                answerdisplays.get(least_common-1).setTextColor(getDatColor(R.color.white));
+                its_background[least_common] = 1;
+                answerdisplays.get(least_common).setTextColor(getDatColor(R.color.white));
+                countdisplays.get(least_common).setTextColor(getDatColor(R.color.white));
+                setDrawable(answerdisplays.get(least_common), R.drawable.red);
+                setDrawable(countdisplays.get(least_common), R.drawable.red);
+                reset_the_other_reds(least_common);
             } else {
                 clear();
             }
             return true; }});
 
+    private void reset_the_other_greens(int most_common) {
+        for(int i=0; i<4; i++){
+            if(i!=most_common){
+                if(its_background[i]==0){
+                    its_background[i] = 2;
+                    answerdisplays.get(i).setTextColor(getDatColor(R.color.black));
+                    countdisplays.get(i).setTextColor(getDatColor(R.color.black));
+                    setDrawable(answerdisplays.get(i), R.drawable.white);
+                    setDrawable(countdisplays.get(i), R.drawable.white);
+                }
+            }
+        }
+    }
+
+    private void reset_the_other_reds(int least_common) {
+        for(int i=0; i<4; i++){
+            if(i!=least_common){
+                if(its_background[i]==1){
+                    its_background[i] = 2;
+                    answerdisplays.get(i).setTextColor(getDatColor(R.color.black));
+                    countdisplays.get(i).setTextColor(getDatColor(R.color.black));
+                    setDrawable(answerdisplays.get(i), R.drawable.white);
+                    setDrawable(countdisplays.get(i), R.drawable.white);
+                }
+            }
+        }
+    }
+
+    private int[] its_background = {0,0,0,0}; // 0 for green, 1 for red, 2 for white
     private void log(Object log){
         Log.i("HH", String.valueOf(log));
     }
