@@ -30,7 +30,7 @@
             android:orientation="vertical">
             <TextView
                 android:textColor="@android:color/white"
-                android:textSize="17sp"
+                android:textSize="19sp"
                 android:paddingTop="5dp"
                 android:paddingBottom="5dp"
                 android:text="Question"
@@ -38,62 +38,62 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/question"/>
-            <LinearLayout
+            <TextView
+                android:paddingStart="5dp"
+                android:paddingEnd="5dp"
                 android:background="@android:color/white"
+                android:textSize="14sp"
+                android:paddingTop="5dp"
+                android:paddingBottom="5dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:weightSum="2">
-                <TextView
-                    android:textSize="13sp"
-                    android:paddingTop="5dp"
-                    android:paddingBottom="5dp"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:textColor="@android:color/black"
-                    android:gravity="center"
-                    android:text="1"
-                    android:id="@+id/a"/>
-                <TextView
-                    android:textSize="13sp"
-                    android:paddingTop="5dp"
-                    android:paddingBottom="5dp"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:textColor="@android:color/black"
-                    android:gravity="center"
-                    android:text="2"
-                    android:id="@+id/b"/>
-            </LinearLayout>
-            <LinearLayout
+                android:layout_weight="1"
+                android:textColor="@android:color/black"
+                android:gravity="start"
+                android:text="1"
+                android:id="@+id/a"/>
+            <TextView
+                android:paddingStart="5dp"
+                android:paddingEnd="5dp"
                 android:background="@android:color/white"
+                android:textSize="14sp"
+                android:paddingTop="5dp"
+                android:paddingBottom="5dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:weightSum="2">
-                <TextView
-                    android:textSize="13sp"
-                    android:paddingTop="5dp"
-                    android:paddingBottom="5dp"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:textColor="@android:color/black"
-                    android:gravity="center"
-                    android:text="3"
-                    android:id="@+id/c"/>
-                <TextView
-                    android:textSize="13sp"
-                    android:paddingTop="5dp"
-                    android:paddingBottom="5dp"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:textColor="@android:color/black"
-                    android:gravity="center"
-                    android:text="4"
-                    android:id="@+id/d"/>
-            </LinearLayout>
+                android:layout_weight="1"
+                android:textColor="@android:color/black"
+                android:gravity="start"
+                android:text="2"
+                android:id="@+id/b"/>
+            <TextView
+                android:paddingStart="5dp"
+                android:paddingEnd="5dp"
+                android:background="@android:color/white"
+                android:textSize="14sp"
+                android:paddingTop="5dp"
+                android:paddingBottom="5dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textColor="@android:color/black"
+                android:gravity="start"
+                android:text="3"
+                android:id="@+id/c"/>
+            <TextView
+                android:paddingStart="5dp"
+                android:paddingEnd="5dp"
+                android:background="@android:color/white"
+                android:textSize="14sp"
+                android:paddingTop="5dp"
+                android:paddingBottom="5dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textColor="@android:color/black"
+                android:gravity="start"
+                android:text="4"
+                android:id="@+id/d"/>
             <Button
                 android:background="@android:color/black"
                 android:textColor="@android:color/white"

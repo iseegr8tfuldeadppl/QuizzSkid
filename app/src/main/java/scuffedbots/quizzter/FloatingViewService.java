@@ -20,6 +20,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
 import android.webkit.ValueCallback;
+import android.webkit.WebResourceRequest;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Button;
@@ -30,6 +31,7 @@ import android.widget.Toast;
 import androidx.annotation.RequiresApi;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationCompat.Builder;
+
 import java.util.ArrayList;
 import java.util.List;
 import scuffedbots.quizzter.Debugging.TopExceptionHandler;
@@ -40,11 +42,11 @@ import static android.os.Build.VERSION_CODES.O;
 public class FloatingViewService extends Service{
 
     private WindowManager.LayoutParams LayoutParams;
-    private WindowManager.LayoutParams LayoutParams2;
+    /*private WindowManager.LayoutParams LayoutParams2;*/
     private WindowManager mWindowManager;
     private Context context;
     private TextView close;
-    private View FloatingView, FloatingView2;
+    private View FloatingView/*, FloatingView2*/;
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -70,10 +72,14 @@ public class FloatingViewService extends Service{
             String action = intent.getAction();
             assert action != null;
             if(action.equals(SHOW_LAYOUT_INTENT)) {
+                /*if(addedview){
+                    addedview = false;
+                    intentnig = null;
+                }*/
                 if(intentnig==null){
-                    mWindowManager.addView(FloatingView2, LayoutParams2);
                     intentnig = intent;
-                    print("ready");
+                    launch_main();
+                    /*print("ready");*/
                 }
             }
         }
@@ -88,29 +94,37 @@ public class FloatingViewService extends Service{
         createNotification();
         createWindowManager();
         createLayoutParams();
-        createLayoutParams2();
+        /*createLayoutParams2();*/
         createFloatingViews();
-        createFloatingViews2();
+        /*createFloatingViews2();*/
         createBroadcastReceiver();
 
         setOnClickListeners();
-        setOnClickListeners2();
         main_browser_work();
+        /*setOnClickListeners2();*/
 
+        /*if(!addedview) {
+            mWindowManager.addView(FloatingView, LayoutParams);
+            *//*mWindowManager.removeView(FloatingView2);*//*
+            addedview = true;
+        }
+        once = true;
+        browser.loadUrl("https://www.google.com/search?q=" + "degenerate");*/
     }
 
     private void main_browser_work() {
         browser.getSettings().setJavaScriptEnabled(true);
-        browser.setWebViewClient(new WebViewClient() {
+        WebViewClient webViewClient = new WebViewClient() {
             @Override
             public void onPageFinished(WebView view, String url) {
                 super.onPageFinished(browser, url);
-                browserholder.setVisibility(View.VISIBLE);
-                close.setVisibility(View.VISIBLE);
-                get_html_of_page_and_treat_it();
+                if(once)
+                    get_html_of_page_and_treat_it();
 
             }
-        });
+        };
+        /*webViewClient.shouldOverrideUrlLoading(browser, );*/
+        browser.setWebViewClient(webViewClient);
     }
 
     private void get_html_of_page_and_treat_it() {
@@ -120,45 +134,45 @@ public class FloatingViewService extends Service{
                 browser.evaluateJavascript("(function(){return window.document.body.outerHTML})();", new ValueCallback<String>() {
                     @Override
                     public void onReceiveValue(String html) {
-                        Log.i("HH", "called");
-                        if(once){
-                            once = false;
-                            remove_alif_wel_lam_from_answers();
-                            int[] counts = count_occurances_of_the_answers_in_google_by_splitting_their_words_for_more_accuracy(html);
+                        if(questione!=null){
+                            if(once){
+                                once = false;
+                                remove_alif_wel_lam_from_answers();
+                                int[] counts = count_occurances_of_the_answers_in_google_by_splitting_their_words_for_more_accuracy(html);
 
-                            if(all_zero(counts)){
-                                print(0);
-                            } else {
-                                int most_or_least_common = find_most_common_or_least_common(counts);
-                                /*for(int i=0; i<counts.length; i++){
-                                    Log.i("HH", "answer " + answers[i] + " has occured " + counts[i] + " times");
-                                }*/
-                                List<Occurance> occurancehandler = new ArrayList<>();
-                                boolean unique = if_other_answers_appear_the_same_amount_then_add_them_into_array(occurancehandler, counts, most_or_least_common);
-
-                                if(unique){
-                                    print(most_or_least_common+1);
-                                    hide_main_page();
-                                }
-
-                                for(Occurance occurance:occurancehandler){
-                                    if(occurance.answer==0){
-                                        String donut = answers[0] + " occured " + occurance.occurances;
-                                        a.setText(donut);
-                                    } else if(occurance.answer==1){
-                                        String donut = answers[1] + " occured " + occurance.occurances;
-                                        b.setText(donut);
-                                    } else if(occurance.answer==2){
-                                        String donut = answers[2] + " occured " + occurance.occurances;
-                                        c.setText(donut);
-                                    } else if(occurance.answer==3){
-                                        String donut = answers[3] + " occured " + occurance.occurances;
-                                        d.setText(donut);
+                                if(all_zero(counts)){
+                                    print(0);
+                                } else {
+                                    int most_or_least_common = find_most_common_or_least_common(counts);
+                                    for(int i=0; i<counts.length; i++){
+                                        Log.i("HH", "answer " + answers[i] + " has occured " + counts[i] + " times");
                                     }
+                                    List<Occurance> occurancehandler = new ArrayList<>();
+                                    boolean unique = if_other_answers_appear_the_same_amount_then_add_them_into_array(occurancehandler, counts, most_or_least_common);
+
+                                    if(unique){
+                                        print(most_or_least_common+1);
+                                    }
+
+                                    for(Occurance occurance:occurancehandler){
+                                        if(occurance.answer==0){
+                                            String donut = answers[0] + " occured " + occurance.occurances;
+                                            a.setText(donut);
+                                        } else if(occurance.answer==1){
+                                            String donut = answers[1] + " occured " + occurance.occurances;
+                                            b.setText(donut);
+                                        } else if(occurance.answer==2){
+                                            String donut = answers[2] + " occured " + occurance.occurances;
+                                            c.setText(donut);
+                                        } else if(occurance.answer==3){
+                                            String donut = answers[3] + " occured " + occurance.occurances;
+                                            d.setText(donut);
+                                        }
+                                    }
+
+
+
                                 }
-
-
-
                             }
                         }
 
@@ -168,7 +182,7 @@ public class FloatingViewService extends Service{
         });
     }
 
-    private void setOnClickListeners2() {
+    /*private void setOnClickListeners2() {
         Button mostcommon = FloatingView2.findViewById(R.id.mostcommon);
         Button leastcommon = FloatingView2.findViewById(R.id.leastcommon);
 
@@ -186,12 +200,12 @@ public class FloatingViewService extends Service{
                 launch_main();
             }
         });
-    }
+    }*/
 
     private void launch_main() {
         if(!addedview) {
             mWindowManager.addView(FloatingView, LayoutParams);
-            mWindowManager.removeView(FloatingView2);
+            /*mWindowManager.removeView(FloatingView2);*/
             addedview = true;
         }
 
@@ -365,6 +379,7 @@ public class FloatingViewService extends Service{
             @Override
             public void onClick(View v) {
                 once = true;
+                Log.i("HH", browser.getUrl());
                 get_html_of_page_and_treat_it();
             }
         });
@@ -423,12 +438,10 @@ public class FloatingViewService extends Service{
             public boolean dispatchKeyEvent(KeyEvent event) {
                 if (event.getKeyCode()==KeyEvent.KEYCODE_BACK) {
                     // handle the back button code;
-                    close.setVisibility(GONE);
-                    browser.setVisibility(GONE);
+                    hide_main_page();
                     return true;
                 } else if(event.getKeyCode()==KeyEvent.KEYCODE_HOME){
-                    close.setVisibility(GONE);
-                    browser.setVisibility(GONE);
+                    hide_main_page();
                     return true;
                 }
                 return super.dispatchKeyEvent(event);
@@ -438,9 +451,9 @@ public class FloatingViewService extends Service{
 
         FloatingView = LayoutInflater.from(context).inflate(R.layout.bubble_main, wrapper);
     }
-    private void createFloatingViews2() {
+   /* private void createFloatingViews2() {
         FloatingView2 = LayoutInflater.from(context).inflate(R.layout.bubble_side, null);
-    }
+    }*/
 
     private void createLayoutParams() {
         int layoutFlag = createLayoutFlag();
@@ -457,7 +470,7 @@ public class FloatingViewService extends Service{
         this.LayoutParams = createdLayoutParams;
     }
 
-    private void createLayoutParams2() {
+    /*private void createLayoutParams2() {
         int layoutFlag = createLayoutFlag();
 
         WindowManager.LayoutParams createdLayoutParams;
@@ -480,7 +493,7 @@ public class FloatingViewService extends Service{
         createdLayoutParams.x = 0;
         createdLayoutParams.y = 0;
         this.LayoutParams2 = createdLayoutParams;
-    }
+    }*/
 
     private int createLayoutFlag() {
         if (SDK_INT >= O) {
