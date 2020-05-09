@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Quizzter</string>
+    <string name="app_name">ElQuizz Rapist</string>
     <string name="huaweisource">com.huawei.systemmanager</string>
     <string name="huaweiactivity">com.huawei.systemmanager.optimize.process.ProtectActivity</string>
     <string name="question">question</string>
@@ -13,9 +13,9 @@
     <string name="answer3">answer3</string>
     <string name="answer4">answer4</string>
     <string name="slash">\"</string>
-    <string name="channel_id">scuffedbots.quizzter</string>
-    <string name="channel_name">QuizzterChannel</string>
-    <string name="notification_title">Quizzter is on</string>
+    <string name="channel_id">scuffedbots.elquizz.takenoutlivefolks</string>
+    <string name="channel_name">ElQuizzTakenOutLiveChannel</string>
+    <string name="notification_title">ElQuizz Rapist Is Lurking</string>
     <string name="answer">answer</string>
     <string name="occurrences">occurrences</string>
     <string name="kaws">\\(</string>
@@ -39,4 +39,6 @@
     <string name="target_package">com.elquiz.app.prod</string>
     <string name="textview_package">android.widget.TextView</string>
     <string name="twelve">12s</string>
+    <string name="restart">RESTART</string>
+    <string name="works_best_on_arabic_mode_elquizz">Works Best On Arabic Mode ElQuizz</string>
 </resources>

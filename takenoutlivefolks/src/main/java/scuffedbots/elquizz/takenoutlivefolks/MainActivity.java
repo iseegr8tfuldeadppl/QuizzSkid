@@ -1,4 +1,4 @@
-package scuffedbots.quizzter;
+package scuffedbots.elquizz.takenoutlivefolks;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -9,7 +9,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.view.View;
-import scuffedbots.quizzter.Debugging.TopExceptionHandler;
+import scuffedbots.elquizz.takenoutlivefolks.Debugging.TopExceptionHandler;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -42,7 +42,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void launch(){
-
         Intent intent22 = new Intent(getApplicationContext(), FloatingViewService.class);
         startService(intent22);
         Intent intent2 = new Intent(this, MyAccessibilityService.class);
@@ -77,5 +76,20 @@ public class MainActivity extends AppCompatActivity {
 
     public void overridebatteryClicked(View view) {
         protected_apps_request();
+    }
+
+    public void restartserviceClicked(View view) {
+        Intent intent22 = new Intent(this, FloatingViewService.class);
+        Intent intent2 = new Intent(this, MyAccessibilityService.class);
+        try{
+            stopService(intent22);
+        } catch(Exception ignored){}
+        try{
+            stopService(intent2);
+        } catch(Exception ignored){}
+        try{
+            startService(intent22);
+            startService(intent2);
+        } catch(Exception ignored){}
     }
 }

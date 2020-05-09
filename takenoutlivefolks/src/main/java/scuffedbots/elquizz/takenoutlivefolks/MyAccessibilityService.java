@@ -1,4 +1,4 @@
-package scuffedbots.quizzter;
+package scuffedbots.elquizz.takenoutlivefolks;
 
 import android.accessibilityservice.AccessibilityService;
 import android.accessibilityservice.AccessibilityServiceInfo;
@@ -12,7 +12,6 @@ public class MyAccessibilityService extends AccessibilityService {
 
     private boolean start_recording_data = false;
     private String[] question_data = {null, null, null, null, null};
-    private int skipper = 0;
     private int index = 0;
 
 
@@ -46,11 +45,10 @@ public class MyAccessibilityService extends AccessibilityService {
     }
 
     private void treat_newquestion(String text) {
-        skipper++;
-        if (skipper % 2 == 1) {
+        if (!(text.equals("أ") || text.equals("ب") || text.equals("ت") || text.equals("ث")
+                || text.equals("A") || text.equals("B") || text.equals("C") || text.equals("D"))) {
             question_data[index] = text;
             if (index == 4) {
-                skipper = 0;
                 start_recording_data = false;
                 index = 0;
                 send_newquestion();

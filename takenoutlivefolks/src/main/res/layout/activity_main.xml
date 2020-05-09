@@ -15,6 +15,26 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
+        <!--Note-->
+        <TextView
+            android:textColor="@android:color/white"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="30sp"
+            android:gravity="center"
+            android:text="@string/works_best_on_arabic_mode_elquizz"
+            android:layout_marginBottom="35dp"/>
+
+        <!--Restart Service-->
+        <Button
+            android:textColor="@android:color/black"
+            android:background="@android:color/white"
+            android:layout_width="match_parent"
+            android:onClick="restartserviceClicked"
+            android:layout_height="wrap_content"
+            android:text="@string/restart"
+            android:layout_marginBottom="20dp"/>
+
         <!--Accept Accessibility Permission-->
         <Button
             android:textColor="@android:color/black"

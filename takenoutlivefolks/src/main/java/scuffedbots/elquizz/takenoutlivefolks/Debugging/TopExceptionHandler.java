@@ -1,4 +1,4 @@
-package scuffedbots.quizzter.Debugging;
+package scuffedbots.elquizz.takenoutlivefolks.Debugging;
 
 import android.util.Log;
 

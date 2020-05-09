@@ -1,4 +1,4 @@
-package scuffedbots.quizzter;
+package scuffedbots.elquizz;
 
 import android.content.Context;
 
@@ -22,6 +22,6 @@ public class ExampleInstrumentedTest {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getInstrumentation().getTargetContext();
 
-        assertEquals("scuffedbots.quizzter", appContext.getPackageName());
+        assertEquals("scuffedbots.elquizz.takenoutlivefolks", appContext.getPackageName());
     }
 }

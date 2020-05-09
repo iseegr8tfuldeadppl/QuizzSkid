@@ -5,7 +5,7 @@ android {
     buildToolsVersion "29.0.2"
 
     defaultConfig {
-        applicationId "scuffedbots.quizzter"
+        applicationId "scuffedbots.elquizz.takenoutlivefolks"
         minSdkVersion 14
         targetSdkVersion 29
         versionCode 1

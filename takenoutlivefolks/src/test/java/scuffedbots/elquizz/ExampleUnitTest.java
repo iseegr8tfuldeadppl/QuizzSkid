@@ -1,4 +1,4 @@
-package scuffedbots.quizzter;
+package scuffedbots.elquizz;
 
 import org.junit.Test;
 

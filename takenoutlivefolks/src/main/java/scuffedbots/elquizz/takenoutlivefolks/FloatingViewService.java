@@ -1,4 +1,4 @@
-package scuffedbots.quizzter;
+package scuffedbots.elquizz.takenoutlivefolks;
 
 import android.app.Notification;
 import android.app.NotificationChannel;
@@ -39,14 +39,15 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import scuffedbots.quizzter.Debugging.TopExceptionHandler;
+import scuffedbots.elquizz.takenoutlivefolks.Debugging.TopExceptionHandler;
 import static android.os.Build.VERSION.SDK_INT;
 import static android.os.Build.VERSION_CODES.O;
 
 
 public class FloatingViewService extends Service{
 
-    protected static final String NEW_QUESTION_INTENT = "scuffedbots.quizzter.NEW_QUESTION";
+
+    protected static final String NEW_QUESTION_INTENT = "scuffedbots.elquizz.takenoutlivefolks.NEW_QUESTION";
     private WindowManager.LayoutParams LayoutParams;
     private WindowManager mWindowManager;
     private Context context;
@@ -57,8 +58,10 @@ public class FloatingViewService extends Service{
     private String[] answers = {null, null, null, null};
     private WebView browser;
     private TextView question, timestamps;
-    private List<TextView> answerdisplays = new ArrayList<>();
-    private List<TextView> countdisplays = new ArrayList<>();
+    private List<TextView> answerdisplays = new ArrayList<>(),
+                            countdisplays = new ArrayList<>();
+    private int[] its_background = {0,0,0,0}; // 0 for green, 1 for red, 2 for white
+
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -93,7 +96,6 @@ public class FloatingViewService extends Service{
                         List<String> links = get_all_links_from_this_google_search(document);
 
                         for(String link:links) {
-                            Log.i("HH", link);
                             if(intentnig!=null)
                                 other_page_scraper(link);
                             else
@@ -203,7 +205,6 @@ public class FloatingViewService extends Service{
         /*DONT DELETE ME*/page_load_ensurance();
     }
 
-
     private void page_load_ensurance() {
         browser.setWebViewClient(new WebViewClient() {
             @Override
@@ -215,30 +216,15 @@ public class FloatingViewService extends Service{
         });
     }
 
-
     private void treat_this_html(String html) {
         remove_unwanted_characters_from_answers();
         remove_alif_wel_lam_from_answers();
         int[] counts = count_occurances_of_the_answers_in_google_by_splitting_their_words_for_more_accuracy(html);
 
-        if(!all_zero(counts)){
-            int most_common = find_most_common(counts);
-            boolean unique = is_it_the_only_non_zero(counts, most_common);
-            if(unique){
-                print(most_common);
-            }
+        if(intentnig==null)
+            return;
 
-            int least_common = find_least_common(counts);
-            unique = is_it_the_only_zero(counts, most_common);
-            if(unique){
-                print(least_common);
-            }
-
-            if(intentnig==null)
-                return;
-
-            display_occurances(counts);
-        }
+        display_occurances(counts);
     }
 
     private void color_most_common(int most_common) {
@@ -276,7 +262,7 @@ public class FloatingViewService extends Service{
         }
     }
 
-    private String launch_main() {
+    private void launch_main() {
         if(!addedview) {
             mWindowManager.addView(FloatingView, LayoutParams);
             addedview = true;
@@ -285,14 +271,18 @@ public class FloatingViewService extends Service{
         String questiono = getBundleExtras(intentnig);
         question.setText(questiono);
 
+
         // display answers
         for(int i=0; i<4; i++)
             answerdisplays.get(i).setText(answers[i]);
 
         questiono = getString(R.string.google_search_prefix) + questiono;
-        for(int i=0; i<4; i++){
+
+        // add the answers into the search
+        /*for(int i=0; i<4; i++){
             questiono += " " + answers[i];
-        }
+        }*/
+
         try{
             double test = Double.parseDouble(answers[0]);
             for(TextView answerdisplay:answerdisplays)
@@ -303,52 +293,9 @@ public class FloatingViewService extends Service{
                 answerdisplay.setGravity(Gravity.START);
             Log.i("HH", "is not a number");
         };
+
         extra_scraper(questiono);
         browser.loadUrl(questiono);
-        return questiono;
-    }
-
-    private int find_least_common(int[] counts) {
-        int most_or_least_common = 0;
-        for(int i=0; i<counts.length; i++){
-            if(counts[i]<=counts[most_or_least_common]){
-                most_or_least_common = i;
-            }
-        }
-        return most_or_least_common+1;
-    }
-
-    private int find_most_common(int[] counts) {
-        int most_or_least_common = 0;
-        for(int i=0; i<counts.length; i++){
-            if(counts[i]>=counts[most_or_least_common]){
-                most_or_least_common = i;
-            }
-        }
-        return most_or_least_common+1;
-    }
-
-
-    private boolean is_it_the_only_zero(int[] counts, int most_common) {
-        for(int i=0; i<counts.length; i++){
-            if(i!=most_common){
-                if(counts[i]==0){
-                    return false;
-                }
-            }
-        }
-        return true;
-    }
-
-    private boolean is_it_the_only_non_zero(int[] counts, int most_common) {
-        for(int i=0; i<counts.length; i++){
-            if(i!=most_common){
-                if(counts[i]!=0){
-                    return false;
-                }
-            }
-        }
-        return true;
     }
 
     private int[] count_occurances_of_the_answers_in_google_by_splitting_their_words_for_more_accuracy(String html) {
@@ -356,8 +303,8 @@ public class FloatingViewService extends Service{
         for(int i=0; i<answers.length; i++){
             String[] words_of_this_answer = answers[i].split(" ");
             for(String word:words_of_this_answer){
-                if(!word.equals(""))
-                    counts[i] = count_its_occurances(html, word);
+                if(word.length()>1)
+                    counts[i] += count_its_occurances(html, word);
             }
         }
         return counts;
@@ -382,21 +329,14 @@ public class FloatingViewService extends Service{
             String[] answersplitbyspaces = answers[i].split(" ");
             answers[i] = "";
             for(String string: answersplitbyspaces){
-                if(String.valueOf(string.charAt(0)).equals(getString(R.string.alif)) && String.valueOf(string.charAt(1)).equals(getString(R.string.lam))){
-                    string = string.substring(2);
-                }
+                if(string.length()>2)
+                    if(String.valueOf(string.charAt(0)).equals(getString(R.string.alif)) && String.valueOf(string.charAt(1)).equals(getString(R.string.lam))){
+                        string = string.substring(2);
+                    }
                 answers[i] += string + " ";
             }
             answers[i] = answers[i].substring(0, answers[i].length()-1);
         }
-    }
-
-    private boolean all_zero(int[] counts) {
-        boolean yes = true;
-        for(int i=1; i<counts.length; i++){
-            yes &= counts[0]-counts[i]==0;
-        }
-        return yes;
     }
 
     private void print(Object log) {
@@ -414,6 +354,12 @@ public class FloatingViewService extends Service{
             answers[1] = b.getString(getString(R.string.answer2));
             answers[2] = b.getString(getString(R.string.answer3));
             answers[3] = b.getString(getString(R.string.answer4));
+            try{
+                answers[0] = answers[0].replace("-", " ").replace("  ", " ");
+                answers[1] = answers[1].replace("-", " ").replace("  ", " ");
+                answers[2] = answers[2].replace("-", " ").replace("  ", " ");
+                answers[3] = answers[3].replace("-", " ").replace("  ", " ");
+            } catch(Exception ignored){}
             return b.getString(getString(R.string.question));
         }
         return "";
@@ -577,7 +523,7 @@ public class FloatingViewService extends Service{
                         clear();
                         intentnig = intent;
                         start_countdown();
-                        extra_scraper(launch_main());
+                        launch_main();
                     }
                 }
             }
@@ -725,8 +671,8 @@ public class FloatingViewService extends Service{
         }
     }
 
-    private int[] its_background = {0,0,0,0}; // 0 for green, 1 for red, 2 for white
-    private void log(Object log){
+    // this is for logging
+    /*private void log(Object log){
         Log.i("HH", String.valueOf(log));
     }
     private void logAll() {
@@ -743,7 +689,7 @@ public class FloatingViewService extends Service{
         log("ccount " + countdisplays.get(2).getText().toString());
         log("dcount " + countdisplays.get(3).getText().toString());
 
-    }
+    }*/
 
     private Handler update_timestamp = new Handler(new Handler.Callback() {
         @Override
