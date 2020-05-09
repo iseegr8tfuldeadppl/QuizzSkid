@@ -276,6 +276,11 @@ public class FloatingViewService extends Service{
         for(int i=0; i<4; i++)
             answerdisplays.get(i).setText(answers[i]);
 
+        try{
+            if(questiono.contains(" ليس ") || questiono.contains(" لم ") || questiono.contains(" لا "))
+                print("NEGATIVE QUESTION!");
+        } catch(Exception ignored){}
+
         questiono = getString(R.string.google_search_prefix) + questiono;
 
         // add the answers into the search
@@ -287,12 +292,14 @@ public class FloatingViewService extends Service{
             double test = Double.parseDouble(answers[0]);
             for(TextView answerdisplay:answerdisplays)
                 answerdisplay.setGravity(Gravity.CENTER);
-            print("number answers");
+            print("NUMBER ANSWERS");
         } catch(Exception ignored){
-            for(TextView answerdisplay:answerdisplays)
-                answerdisplay.setGravity(Gravity.START);
-            Log.i("HH", "is not a number");
-        };
+            try{
+                for(TextView answerdisplay:answerdisplays)
+                    answerdisplay.setGravity(Gravity.START);
+                Log.i("HH", "is not a number");
+            } catch(Exception ignored2){}
+        }
 
         extra_scraper(questiono);
         browser.loadUrl(questiono);
@@ -327,15 +334,21 @@ public class FloatingViewService extends Service{
         // TODO remove alif wel lam from answers words
         for(int i=0; i<answers.length; i++){
             String[] answersplitbyspaces = answers[i].split(" ");
-            answers[i] = "";
-            for(String string: answersplitbyspaces){
-                if(string.length()>2)
-                    if(String.valueOf(string.charAt(0)).equals(getString(R.string.alif)) && String.valueOf(string.charAt(1)).equals(getString(R.string.lam))){
-                        string = string.substring(2);
-                    }
-                answers[i] += string + " ";
+            String save = answers[i];
+            try{
+                answers[i] = "";
+                for(String string: answersplitbyspaces){
+                    if(string.length()>2)
+                        if(String.valueOf(string.charAt(0)).equals(getString(R.string.alif)) && String.valueOf(string.charAt(1)).equals(getString(R.string.lam))){
+                            string = string.substring(2);
+                        }
+                    answers[i] += string + " ";
+                }
+                if(String.valueOf(answers[i].charAt(answers[i].length()-1)).equals(" "))
+                    answers[i] = answers[i].substring(0, answers[i].length()-1);
+            } catch(Exception ignored){
+                answers[i] = save;
             }
-            answers[i] = answers[i].substring(0, answers[i].length()-1);
         }
     }
 
@@ -541,7 +554,7 @@ public class FloatingViewService extends Service{
                     if(count.equals(getString(R.string._0))){
                         countdisplays.get(answer).setText(String.valueOf(occurances));
                     } else {
-                        String f = occurances + getString(R.string.kaws2) + count + getString(R.string.kaws3);
+                        String f = (occurances+Integer.parseInt(count)) + getString(R.string.kaws2) + count + getString(R.string.kaws3);
                         countdisplays.get(answer).setText(f);
                     }
                 } else {
@@ -637,7 +650,19 @@ public class FloatingViewService extends Service{
                 countdisplays.get(least_common).setTextColor(getDatColor(R.color.white));
                 setDrawable(answerdisplays.get(least_common), R.drawable.red);
                 setDrawable(countdisplays.get(least_common), R.drawable.red);
+
                 reset_the_other_reds(least_common);
+                try{
+                    for(int i=0; i<4; i++){
+                        if(Integer.parseInt(countdisplays.get(i).getText().toString().split(getString(R.string.kaws))[0])==0){
+                            its_background[i] = 1;
+                            answerdisplays.get(i).setTextColor(getDatColor(R.color.white));
+                            countdisplays.get(i).setTextColor(getDatColor(R.color.white));
+                            setDrawable(answerdisplays.get(i), R.drawable.red);
+                            setDrawable(countdisplays.get(i), R.drawable.red);
+                        }
+                    }
+                } catch(Exception ignored){};
             } else {
                 clear();
             }
