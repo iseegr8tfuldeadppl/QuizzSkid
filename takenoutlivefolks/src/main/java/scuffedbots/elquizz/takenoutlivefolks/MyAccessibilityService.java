@@ -16,8 +16,8 @@ public class MyAccessibilityService extends AccessibilityService {
 
     @Override
     public void onAccessibilityEvent(AccessibilityEvent event) {
-        //old_method(event);
-        new_method(getRootInActiveWindow());
+        old_method(event);
+        /*new_method(getRootInActiveWindow());*/
     }
 
     private boolean found_12s_or_10s = false;
@@ -48,6 +48,7 @@ public class MyAccessibilityService extends AccessibilityService {
                     if(timestamp.equals("10s"))
                         found_12s_or_10s = true;
                 } else {*/
+                log(timestamp);
                     if(timestamp.equals("12s"))
                         found_12s_or_10s = true;
                 /*}*/
@@ -144,7 +145,6 @@ public class MyAccessibilityService extends AccessibilityService {
     }
 
     // TODO OLD METHOD
-    /*
     private boolean start_recording_data = false;
     private int index = 0;
 
@@ -185,11 +185,9 @@ public class MyAccessibilityService extends AccessibilityService {
     }
 
     private boolean is_a_valid_textview(AccessibilityNodeInfo source) {
-        Log.i("HH", event.toString());
-        Log.i("HH", source.toString());
         int level = source.getChildCount();
         return source.getClassName().equals(getString(R.string.textview_package)) && source.getText()!=null && !source.getText().toString().isEmpty();
-    }*/
+    }
 
     private void send_newquestion() {
         new Thread(new Runnable() {
