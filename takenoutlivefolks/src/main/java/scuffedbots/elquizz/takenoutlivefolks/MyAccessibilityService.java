@@ -5,30 +5,157 @@ import android.accessibilityservice.AccessibilityServiceInfo;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityNodeInfo;
 
+
 public class MyAccessibilityService extends AccessibilityService {
 
-    private boolean start_recording_data = false;
     private String[] question_data = {null, null, null, null, null};
-    private int index = 0;
-
 
     @Override
     public void onAccessibilityEvent(AccessibilityEvent event) {
-        AccessibilityNodeInfo source = event.getSource();
-        if (source == null)
+        //old_method(event);
+        new_method(getRootInActiveWindow());
+    }
+
+    private boolean found_12s_or_10s = false;
+    private void new_method(AccessibilityNodeInfo root) {
+        if (root == null)
             return;
 
-        if (is_a_valid_textview(source)){
-            String text = gettext(source);
+        try{
+            if(!found_12s_or_10s){
+                String timestamp = root
+                        .getChild(0)
+                        .getChild(0)
+                        .getChild(0)
+                        .getChild(0)
+                        .getChild(0)
+                        .getChild(1)
+                        .getChild(0)
+                        .getChild(1)
+                        .getChild(0)
+                        .getChild(1)
+                        .getChild(0)
+                        .getChild(2)
+                        .getChild(0)
+                        .getText()
+                        .toString();
+                /*log(timestamp);
+                if(android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N){
+                    if(timestamp.equals("10s"))
+                        found_12s_or_10s = true;
+                } else {*/
+                    if(timestamp.equals("12s"))
+                        found_12s_or_10s = true;
+                /*}*/
+            }
+
+            if(found_12s_or_10s){
+                new_treat_question(root);
+            }
+        } catch(Exception ignored){}
+    }
+
+    private void new_treat_question(AccessibilityNodeInfo root) {
+        root = root
+                .getChild(0)
+                .getChild(0)
+                .getChild(0)
+                .getChild(0)
+                .getChild(0)
+                .getChild(1)
+                .getChild(0)
+                .getChild(1)
+                .getChild(0)
+                .getChild(1)
+                .getChild(0);
+
+        CharSequence[] samples = {null, null, null, null, null};
+        samples[0] = root.getChild(3).getText();
+        samples[1] = root.getChild(4).getChild(0).getChild(0).getText();
+        samples[2] = root.getChild(5).getChild(0).getChild(0).getText();
+        samples[3] = root.getChild(6).getChild(0).getChild(0).getText();
+        samples[4] = root.getChild(7).getChild(0).getChild(0).getText();
+
+        if(samples[0]!=null && samples[1]!=null && samples[2]!=null && samples[3]!=null && samples[4]!=null){
+
+            if(question_data[0]!=null){
+                if(!question_data[0].equals(samples[0].toString())){
+                    apply_new_question_stuff(samples);
+                    send_newquestion();
+                }
+            } else {
+                apply_new_question_stuff(samples);
+                send_newquestion();
+            }
+
+            found_12s_or_10s = false;
+        } else {
+            Log.i("HH", "stuff isn't fully in yet");
+        }
+
+    }
+
+    private void apply_new_question_stuff(CharSequence[] samples) {
+        question_data[0] = samples[0].toString();
+        question_data[1] = samples[1].toString();
+        question_data[2] = samples[2].toString();
+        question_data[3] = samples[3].toString();
+        question_data[4] = samples[4].toString();
+    }
+
+    // TODO Finding a certain element
+    /*private boolean stop = false;
+    private void print_tree(AccessibilityNodeInfo nodeInfo, int depth) {
+        if (nodeInfo == null) return;
+
+        String logString = "";
+
+        for (int i = 0; i < depth; ++i) {
+            logString += " ";
+        }
+
+        if(!stop){
+            logString += "Text: " + nodeInfo.getText() + " " + " Content-Description: " + nodeInfo.getContentDescription();
+
+            log(logString);
+        }
+        else
+            return;
+
+        try{
+            if(nodeInfo.getText().toString().contains("s"))
+                stop = true;
+        } catch(Exception ignored){}
+
+        for (int i = 0; i < nodeInfo.getChildCount(); ++i) {
+            if(!stop)
+                print_tree(nodeInfo.getChild(i), depth + 1);
+            else
+                return;
+        }
+    }*/
+
+    private void log(Object log) {
+        Log.i("HH", String.valueOf(log));
+    }
+
+    // TODO OLD METHOD
+    /*
+    private boolean start_recording_data = false;
+    private int index = 0;
+
+    private void old_method(AccessibilityEvent event) {
+        if (is_a_valid_textview(event.getSource())){
+            String text = gettext(event.getSource());
             if(!is_anew_question(text)) {
                 if(start_recording_data)
                     treat_newquestion(text);
             }
         }
-
     }
 
     private String gettext(AccessibilityNodeInfo source) {
@@ -58,11 +185,11 @@ public class MyAccessibilityService extends AccessibilityService {
     }
 
     private boolean is_a_valid_textview(AccessibilityNodeInfo source) {
-        /*Log.i("HH", event.toString());*/
-        /*Log.i("HH", source.toString());*/
-        /*int level = source.getChildCount();*/
+        Log.i("HH", event.toString());
+        Log.i("HH", source.toString());
+        int level = source.getChildCount();
         return source.getClassName().equals(getString(R.string.textview_package)) && source.getText()!=null && !source.getText().toString().isEmpty();
-    }
+    }*/
 
     private void send_newquestion() {
         new Thread(new Runnable() {
@@ -77,8 +204,8 @@ public class MyAccessibilityService extends AccessibilityService {
                 b.putString(getString(R.string.answer4), question_data[4]);
                 intent2.putExtras(b);
                 getApplicationContext().sendBroadcast(intent2);
-
                 question_data = new String[]{null, null, null, null, null};
+
             }
         }).start();
     }
@@ -94,17 +221,26 @@ public class MyAccessibilityService extends AccessibilityService {
         // Set the type of feedback your service will provide. We are setting it to GENERIC.
         // Default services are invoked only if no package-specific ones are present for the type of AccessibilityEvent generated.
         // This is a general-purpose service, so we will set some flags
-        /*| AccessibilityServiceInfo.FLAG_INCLUDE_NOT_IMPORTANT_VIEWS*//*| AccessibilityServiceInfo.FLAG_REPORT_VIEW_IDS*//*| AccessibilityServiceInfo.FLAG_REQUEST_ENHANCED_WEB_ACCESSIBILITY*//*| AccessibilityServiceInfo.FLAG_RETRIEVE_INTERACTIVE_WINDOWS*/;
         // We are keeping the timeout to 0 as we don’t need any delay or to pause our accessibility events
-        info.eventTypes = AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED
-                | AccessibilityEvent.TYPE_WINDOW_CONTENT_CHANGED;
+        info.eventTypes = /*AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED
+                        | */AccessibilityEvent.TYPE_WINDOW_CONTENT_CHANGED;
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             info.eventTypes |= AccessibilityEvent.TYPE_WINDOWS_CHANGED;
         }
         info.packageNames = new String[]{getString(R.string.target_package)};
-        info.feedbackType = AccessibilityServiceInfo.FEEDBACK_GENERIC;
-        info.flags = AccessibilityServiceInfo.DEFAULT;
+        /*info.feedbackType = AccessibilityServiceInfo.FEEDBACK_GENERIC;*/ // YOU HAVE TO INCLUDE IT IN SERVICECONFIG.XML FOR IT TO WORK
+        info.feedbackType = AccessibilityServiceInfo.FEEDBACK_GENERIC; // YOU HAVE TO INCLUDE IT IN SERVICECONFIG.XML FOR IT TO WORK
+
+        info.flags = AccessibilityServiceInfo.DEFAULT
+                | AccessibilityServiceInfo.FLAG_INCLUDE_NOT_IMPORTANT_VIEWS;
+
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            info.flags |= AccessibilityServiceInfo.FLAG_RETRIEVE_INTERACTIVE_WINDOWS;
+        }
+        /*| AccessibilityServiceInfo.FLAG_REQUEST_ENHANCED_WEB_ACCESSIBILITY | AccessibilityServiceInfo.FLAG_REPORT_VIEW_IDS*/
+
         info.notificationTimeout = 0;
         this.setServiceInfo(info);
     }

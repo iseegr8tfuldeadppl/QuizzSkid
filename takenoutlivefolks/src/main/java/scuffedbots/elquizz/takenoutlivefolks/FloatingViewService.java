@@ -52,15 +52,14 @@ public class FloatingViewService extends Service{
     private WindowManager mWindowManager;
     private Context context;
     private View FloatingView;
-    private boolean addedview = false,
-            running = true;
+    private boolean addedview = false, running = true;
     private Intent intentnig;
     private String[] answers = {null, null, null, null};
     private WebView browser;
     private TextView question, timestamps;
-    private List<TextView> answerdisplays = new ArrayList<>(),
-                            countdisplays = new ArrayList<>();
+    private List<TextView> answerdisplays = new ArrayList<>(), countdisplays = new ArrayList<>(), countdisplays2 = new ArrayList<>();
     private int[] its_background = {0,0,0,0}; // 0 for green, 1 for red, 2 for white
+    private int[] its_background_google = {0,0,0,0}; // 0 for green, 1 for red, 2 for white
 
 
     @Override
@@ -87,11 +86,11 @@ public class FloatingViewService extends Service{
             @Override
             public void run() {
                 try {
-                    String[] prefixes = { "", " wikipedia "};
+                    String[] prefixes = {  " wikipedia ", ""};
                     for(String prefix:prefixes){
                         Document document = Jsoup.connect(question_link + prefix).get();
 
-                        treat_this_html(document.body().text());
+                        treat_this_html(document.body().text(), true);
 
                         List<String> links = get_all_links_from_this_google_search(document);
 
@@ -127,7 +126,7 @@ public class FloatingViewService extends Service{
     private void other_page_scraper(String link) {
         try {
             Document document = Jsoup.connect(link).get();
-            treat_this_html(document.body().text());
+            treat_this_html(document.body().text(), false);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -148,8 +147,10 @@ public class FloatingViewService extends Service{
                 while(running && intentnig!=null){
                     wait_1_second();
                     span = calculate_span(start_second);
-                    if(span>=12) running = false;
-                    else trigger_update_timestamp(span);
+
+                    if(span>=10) running = false;
+                    else trigger_update_timestamp(span, 10);
+
                 }
             }
         }).start();
@@ -162,10 +163,10 @@ public class FloatingViewService extends Service{
         return span;
     }
 
-    private void trigger_update_timestamp(int span) {
+    private void trigger_update_timestamp(int span, int limit) {
         Message msg = new Message();
         Bundle b = new Bundle();
-        b.putString(getString(R.string.timestamp), (12-span) + getString(R.string.s));
+        b.putString(getString(R.string.timestamp), (limit-span) + getString(R.string.s));
         msg.setData(b);
         update_timestamp.sendMessage(msg);
     }
@@ -216,7 +217,7 @@ public class FloatingViewService extends Service{
         });
     }
 
-    private void treat_this_html(String html) {
+    private void treat_this_html(String html, boolean google_true_other_side_false) {
         remove_unwanted_characters_from_answers();
         remove_alif_wel_lam_from_answers();
         int[] counts = count_occurances_of_the_answers_in_google_by_splitting_their_words_for_more_accuracy(html);
@@ -224,21 +225,23 @@ public class FloatingViewService extends Service{
         if(intentnig==null)
             return;
 
-        display_occurances(counts);
+        display_occurances(counts, google_true_other_side_false);
     }
 
-    private void color_most_common(int most_common) {
+    private void color_most_common(int most_common, boolean google_true_other_side_false) {
         Message msg = new Message();
         Bundle b = new Bundle();
         b.putInt(getString(R.string.most_common), most_common);
+        b.putBoolean("google_true_other_side_false", google_true_other_side_false);
         msg.setData(b);
         color_most_common.sendMessage(msg);
     }
 
-    private void color_least_common(int least_common) {
+    private void color_least_common(int least_common, boolean google_true_other_side_false) {
         Message msg = new Message();
         Bundle b = new Bundle();
         b.putInt(getString(R.string.least_common), least_common);
+        b.putBoolean("google_true_other_side_false", google_true_other_side_false);
         msg.setData(b);
         color_least_common.sendMessage(msg);
     }
@@ -249,7 +252,7 @@ public class FloatingViewService extends Service{
         }
     }
 
-    private void display_occurances(int[] counts) {
+    private void display_occurances(int[] counts, boolean google_true_other_side_false) {
         int index = -1;
         for(int count:counts){
             index ++;
@@ -257,6 +260,7 @@ public class FloatingViewService extends Service{
             Bundle b = new Bundle();
             b.putInt(getString(R.string.occurrences), count);
             b.putInt(getString(R.string.answer), index);
+            b.putBoolean("google_true_other_side_false", google_true_other_side_false);
             msg.setData(b);
             update_count.sendMessage(msg);
         }
@@ -273,8 +277,9 @@ public class FloatingViewService extends Service{
 
 
         // display answers
-        for(int i=0; i<4; i++)
+        for(int i=0; i<4; i++){
             answerdisplays.get(i).setText(answers[i]);
+        }
 
         try{
             if(questiono.contains(" ليس ") || questiono.contains(" لم ") || questiono.contains(" لا "))
@@ -291,18 +296,22 @@ public class FloatingViewService extends Service{
         try{
             double test = Double.parseDouble(answers[0]);
             for(TextView answerdisplay:answerdisplays)
-                answerdisplay.setGravity(Gravity.CENTER);
+                answerdisplay.setGravity(Gravity.END);
             print("NUMBER ANSWERS");
         } catch(Exception ignored){
             try{
                 for(TextView answerdisplay:answerdisplays)
                     answerdisplay.setGravity(Gravity.START);
-                Log.i("HH", "is not a number");
             } catch(Exception ignored2){}
         }
 
         extra_scraper(questiono);
         browser.loadUrl(questiono);
+    }
+
+
+    private void log(Object log) {
+        Log.i("HH", String.valueOf(log));
     }
 
     private int[] count_occurances_of_the_answers_in_google_by_splitting_their_words_for_more_accuracy(String html) {
@@ -383,6 +392,10 @@ public class FloatingViewService extends Service{
         countdisplays.add((TextView) FloatingView.findViewById(R.id.bcount));
         countdisplays.add((TextView) FloatingView.findViewById(R.id.ccount));
         countdisplays.add((TextView) FloatingView.findViewById(R.id.dcount));
+        countdisplays2.add((TextView) FloatingView.findViewById(R.id.acount2));
+        countdisplays2.add((TextView) FloatingView.findViewById(R.id.bcount2));
+        countdisplays2.add((TextView) FloatingView.findViewById(R.id.ccount2));
+        countdisplays2.add((TextView) FloatingView.findViewById(R.id.dcount2));
         answerdisplays.add((TextView) FloatingView.findViewById(R.id.a));
         answerdisplays.add((TextView) FloatingView.findViewById(R.id.b));
         answerdisplays.add((TextView) FloatingView.findViewById(R.id.c));
@@ -400,30 +413,32 @@ public class FloatingViewService extends Service{
     }
 
     private void hide_main_page() {
-        clear();
         if(addedview){
             mWindowManager.removeView(FloatingView);
             addedview = false;
         }
+        clear();
+
     }
 
     private void clear() {
         intentnig = null;
 
+        timestamps.setText(getString(R.string.ten));
+
         int black = getDatColor(R.color.black);
-        for(TextView countdisplay:countdisplays){
-            countdisplay.setTextColor(black);
-            setDrawable(countdisplay, R.drawable.white);
-            countdisplay.setText(getString(R.string._0));
+        for(int i=0; i<4; i++){
+            its_background[i] = 2;
+            its_background_google[i] = 2;
+
+            countdisplays.get(i).setTextColor(black);
+            setDrawable(countdisplays.get(i), R.drawable.white);
+            countdisplays.get(i).setText(getString(R.string._0));
+            countdisplays2.get(i).setTextColor(black);
+            setDrawable(countdisplays2.get(i), R.drawable.white);
+            countdisplays2.get(i).setText(getString(R.string._0));
         }
 
-        int index = -1;
-        for(TextView answerdisplay:answerdisplays){
-            index ++;
-            its_background[index] = 2;
-            answerdisplay.setTextColor(black);
-            setDrawable(answerdisplay, R.drawable.white);
-        }
 
     }
 
@@ -548,27 +563,30 @@ public class FloatingViewService extends Service{
         public boolean handleMessage(@NonNull Message msg) {
             int answer = msg.getData().getInt(getString(R.string.answer));
             int occurances = msg.getData().getInt(getString(R.string.occurrences));
+            boolean google_true_other_side_false = msg.getData().getBoolean("google_true_other_side_false");
             if(intentnig!=null){
-                String count = countdisplays.get(answer).getText().toString();
-                if(!count.contains(getString(R.string.kaws2))){
-                    if(count.equals(getString(R.string._0))){
-                        countdisplays.get(answer).setText(String.valueOf(occurances));
-                    } else {
-                        String f = (occurances+Integer.parseInt(count)) + getString(R.string.kaws2) + count + getString(R.string.kaws3);
-                        countdisplays.get(answer).setText(f);
-                    }
+                if (google_true_other_side_false) {
+                    String count = countdisplays2.get(answer).getText().toString();
+                    countdisplays2.get(answer).setText(String.valueOf(occurances+Integer.parseInt(count)));
+
+                    int[] total_for_each_answer = get_total2_for_each_answer();
+                    int largest = get_largest(total_for_each_answer);
+                    int tiniest = get_tiniest(total_for_each_answer);
+
+                    color_most_common(largest, true);
+                    color_least_common(tiniest, true);
                 } else {
-                    String[] splitted = count.split(getString(R.string.kaws));
-                    String f = (occurances+Integer.parseInt(splitted[0])) + getString(R.string.kaws2) + splitted[1];
-                    countdisplays.get(answer).setText(f);
+                    String count = countdisplays.get(answer).getText().toString();
+                    countdisplays.get(answer).setText(String.valueOf(occurances+Integer.parseInt(count)));
+
+                    int[] total_for_each_answer = get_total_for_each_answer();
+                    int largest = get_largest(total_for_each_answer);
+                    int tiniest = get_tiniest(total_for_each_answer);
+
+                    color_most_common(largest, false);
+                    color_least_common(tiniest, false);
                 }
 
-                int[] total_for_each_answer = get_total_for_each_answer();
-                int largest = get_largest(total_for_each_answer);
-                int tiniest = get_tiniest(total_for_each_answer);
-
-                color_most_common(largest);
-                color_least_common(tiniest);
             } else {
                 hide_main_page();
             }
@@ -609,17 +627,33 @@ public class FloatingViewService extends Service{
         return bruh;
     }
 
+    private int[] get_total2_for_each_answer() {
+        int[] bruh = {0,0,0,0};
+        int index = -1;
+        for(TextView countdisplay:countdisplays2){
+            index ++;
+            bruh[index] = Integer.parseInt(countdisplay.getText().toString());
+        }
+        return bruh;
+    }
+
     private Handler color_most_common = new Handler(new Handler.Callback() {
         @Override
         public boolean handleMessage(@NonNull Message msg) {
+            boolean google_true_other_side_false = msg.getData().getBoolean("google_true_other_side_false");
             int most_common = msg.getData().getInt(getString(R.string.most_common));
             if(intentnig!=null){
-                its_background[most_common] = 0;
-                answerdisplays.get(most_common).setTextColor(getDatColor(R.color.black));
-                countdisplays.get(most_common).setTextColor(getDatColor(R.color.black));
-                setDrawable(answerdisplays.get(most_common), R.drawable.green);
-                setDrawable(countdisplays.get(most_common), R.drawable.green);
-                reset_the_other_greens(most_common);
+                if(google_true_other_side_false){
+                    its_background_google[most_common] = 0;
+                    countdisplays2.get(most_common).setTextColor(getDatColor(R.color.black));
+                    setDrawable(countdisplays2.get(most_common), R.drawable.green);
+                } else {
+                    its_background[most_common] = 0;
+                    countdisplays.get(most_common).setTextColor(getDatColor(R.color.black));
+                    setDrawable(countdisplays.get(most_common), R.drawable.green);
+                }
+
+                reset_the_other_greens(most_common, google_true_other_side_false);
             } else {
                 hide_main_page();
             }
@@ -644,22 +678,39 @@ public class FloatingViewService extends Service{
         @Override
         public boolean handleMessage(@NonNull Message msg) {
             int least_common = msg.getData().getInt(getString(R.string.least_common));
+            boolean google_true_other_side_false = msg.getData().getBoolean("google_true_other_side_false");
             if(intentnig!=null){
-                its_background[least_common] = 1;
-                answerdisplays.get(least_common).setTextColor(getDatColor(R.color.white));
-                countdisplays.get(least_common).setTextColor(getDatColor(R.color.white));
-                setDrawable(answerdisplays.get(least_common), R.drawable.red);
-                setDrawable(countdisplays.get(least_common), R.drawable.red);
+                if(google_true_other_side_false){
+                    its_background_google[least_common] = 1;
 
-                reset_the_other_reds(least_common);
+                    countdisplays2.get(least_common).setTextColor(getDatColor(R.color.white));
+                    setDrawable(countdisplays2.get(least_common), R.drawable.red);
+                } else {
+                    its_background[least_common] = 1;
+
+                    countdisplays.get(least_common).setTextColor(getDatColor(R.color.white));
+                    setDrawable(countdisplays.get(least_common), R.drawable.red);
+                }
+
+                reset_the_other_reds(least_common, google_true_other_side_false);
                 try{
-                    for(int i=0; i<4; i++){
-                        if(Integer.parseInt(countdisplays.get(i).getText().toString().split(getString(R.string.kaws))[0])==0){
-                            its_background[i] = 1;
-                            answerdisplays.get(i).setTextColor(getDatColor(R.color.white));
-                            countdisplays.get(i).setTextColor(getDatColor(R.color.white));
-                            setDrawable(answerdisplays.get(i), R.drawable.red);
-                            setDrawable(countdisplays.get(i), R.drawable.red);
+                    if (google_true_other_side_false) {
+                        for(int i=0; i<4; i++){
+                            if(Integer.parseInt(countdisplays2.get(i).getText().toString())==0){
+                                its_background_google[i] = 1;
+
+                                countdisplays2.get(i).setTextColor(getDatColor(R.color.white));
+                                setDrawable(countdisplays2.get(i), R.drawable.red);
+                            }
+                        }
+                    } else {
+                        for(int i=0; i<4; i++){
+                            if(Integer.parseInt(countdisplays.get(i).getText().toString())==0){
+                                its_background[i] = 1;
+
+                                countdisplays.get(i).setTextColor(getDatColor(R.color.white));
+                                setDrawable(countdisplays.get(i), R.drawable.red);
+                            }
                         }
                     }
                 } catch(Exception ignored){};
@@ -668,29 +719,48 @@ public class FloatingViewService extends Service{
             }
             return true; }});
 
-    private void reset_the_other_greens(int most_common) {
+    private void reset_the_other_greens(int most_common, boolean google_true_other_side_false) {
         for(int i=0; i<4; i++){
             if(i!=most_common){
-                if(its_background[i]==0){
-                    its_background[i] = 2;
-                    answerdisplays.get(i).setTextColor(getDatColor(R.color.black));
-                    countdisplays.get(i).setTextColor(getDatColor(R.color.black));
-                    setDrawable(answerdisplays.get(i), R.drawable.white);
-                    setDrawable(countdisplays.get(i), R.drawable.white);
+                if(google_true_other_side_false){
+                    if(its_background_google[i]==0){
+                        its_background_google[i] = 2;
+
+                        countdisplays2.get(i).setTextColor(getDatColor(R.color.black));
+                        setDrawable(countdisplays2.get(i), R.drawable.white);
+                    }
+                } else {
+                    if(its_background[i]==0){
+                        its_background[i] = 2;
+
+                        countdisplays.get(i).setTextColor(getDatColor(R.color.black));
+                        setDrawable(countdisplays.get(i), R.drawable.white);
+                    }
                 }
             }
         }
     }
 
-    private void reset_the_other_reds(int least_common) {
+    private void reset_the_other_reds(int least_common, boolean google_true_other_side_false) {
         for(int i=0; i<4; i++){
             if(i!=least_common){
-                if(its_background[i]==1){
-                    its_background[i] = 2;
-                    answerdisplays.get(i).setTextColor(getDatColor(R.color.black));
-                    countdisplays.get(i).setTextColor(getDatColor(R.color.black));
-                    setDrawable(answerdisplays.get(i), R.drawable.white);
-                    setDrawable(countdisplays.get(i), R.drawable.white);
+                if (google_true_other_side_false) {
+                    if(its_background_google[i]==1){
+                        its_background_google[i] = 2;
+
+                        countdisplays2.get(i).setTextColor(getDatColor(R.color.black));
+                        setDrawable(countdisplays2.get(i), R.drawable.white);
+                    }
+                } else {
+                    if(its_background[i]==1){
+
+                        its_background[i] = 2;
+                    /*answerdisplays.get(i).setTextColor(getDatColor(R.color.black));
+                    setDrawable(answerdisplays.get(i), R.drawable.white);*/
+
+                        countdisplays.get(i).setTextColor(getDatColor(R.color.black));
+                        setDrawable(countdisplays.get(i), R.drawable.white);
+                    }
                 }
             }
         }

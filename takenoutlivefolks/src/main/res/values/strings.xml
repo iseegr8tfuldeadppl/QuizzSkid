@@ -40,5 +40,9 @@
     <string name="textview_package">android.widget.TextView</string>
     <string name="twelve">12s</string>
     <string name="restart">RESTART</string>
-    <string name="works_best_on_arabic_mode_elquizz">Works Best On Arabic Mode ElQuizz</string>
+    <string name="works_best_on_arabic_mode_elquizz">Works best on arabic ElQuizz</string>
+    <string name="ten">10s</string>
+    <string name="type_a_question">Type a question..</string>
+    <string name="search">SEARCH</string>
+    <string name="you_re_set">You\'re Set!</string>
 </resources>
