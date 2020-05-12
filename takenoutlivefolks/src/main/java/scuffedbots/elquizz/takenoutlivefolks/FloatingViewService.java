@@ -86,7 +86,7 @@ public class FloatingViewService extends Service{
             @Override
             public void run() {
                 try {
-                    String[] prefixes = {  " wikipedia ", ""};
+                    String[] prefixes = {""," wikipedia "};
                     for(String prefix:prefixes){
                         Document document = Jsoup.connect(question_link + prefix).get();
 
@@ -94,7 +94,16 @@ public class FloatingViewService extends Service{
 
                         List<String> links = get_all_links_from_this_google_search(document);
 
+                        int index = -1;
                         for(String link:links) {
+
+                            if(!new_method){
+                                // only take the first five websites of the google search
+                                index ++;
+                                if(index>5)
+                                    break;
+                            }
+
                             if(intentnig!=null)
                                 other_page_scraper(link);
                             else
@@ -253,17 +262,29 @@ public class FloatingViewService extends Service{
     }
 
     private void display_occurances(int[] counts, boolean google_true_other_side_false) {
-        int index = -1;
-        for(int count:counts){
-            index ++;
+        if(new_method){
+            int largest = get_largest(counts);
             Message msg = new Message();
             Bundle b = new Bundle();
-            b.putInt(getString(R.string.occurrences), count);
-            b.putInt(getString(R.string.answer), index);
+            b.putInt(getString(R.string.occurrences), 1);
+            b.putInt(getString(R.string.answer), largest);
             b.putBoolean("google_true_other_side_false", google_true_other_side_false);
             msg.setData(b);
             update_count.sendMessage(msg);
+        } else {
+            int index = -1;
+            for(int count:counts){
+                index ++;
+                Message msg = new Message();
+                Bundle b = new Bundle();
+                b.putInt(getString(R.string.occurrences), count);
+                b.putInt(getString(R.string.answer), index);
+                b.putBoolean("google_true_other_side_false", google_true_other_side_false);
+                msg.setData(b);
+                update_count.sendMessage(msg);
+            }
         }
+
     }
 
     private void launch_main() {
@@ -558,6 +579,7 @@ public class FloatingViewService extends Service{
         }
     };
 
+    private boolean new_method = true;
     private Handler update_count = new Handler(new Handler.Callback() {
         @Override
         public boolean handleMessage(@NonNull Message msg) {
@@ -576,15 +598,26 @@ public class FloatingViewService extends Service{
                     color_most_common(largest, true);
                     color_least_common(tiniest, true);
                 } else {
-                    String count = countdisplays.get(answer).getText().toString();
-                    countdisplays.get(answer).setText(String.valueOf(occurances+Integer.parseInt(count)));
+                    if (new_method) {
+                        String count = countdisplays.get(answer).getText().toString();
+                        countdisplays.get(answer).setText(String.valueOf(occurances+Integer.parseInt(count)));
+                        int[] total_for_each_answer = get_total_for_each_answer();
+                        int largest = get_largest(total_for_each_answer);
+                        int tiniest = get_tiniest(total_for_each_answer);
+                        color_most_common(largest, false);
+                        color_least_common(tiniest, false);
 
-                    int[] total_for_each_answer = get_total_for_each_answer();
-                    int largest = get_largest(total_for_each_answer);
-                    int tiniest = get_tiniest(total_for_each_answer);
+                    } else {
+                        String count = countdisplays.get(answer).getText().toString();
+                        countdisplays.get(answer).setText(String.valueOf(occurances+Integer.parseInt(count)));
 
-                    color_most_common(largest, false);
-                    color_least_common(tiniest, false);
+                        int[] total_for_each_answer = get_total_for_each_answer();
+                        int largest = get_largest(total_for_each_answer);
+                        int tiniest = get_tiniest(total_for_each_answer);
+
+                        color_most_common(largest, false);
+                        color_least_common(tiniest, false);
+                    }
                 }
 
             } else {

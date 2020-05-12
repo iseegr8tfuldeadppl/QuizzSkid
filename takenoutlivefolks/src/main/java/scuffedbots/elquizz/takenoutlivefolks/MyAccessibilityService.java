@@ -13,11 +13,17 @@ import android.view.accessibility.AccessibilityNodeInfo;
 public class MyAccessibilityService extends AccessibilityService {
 
     private String[] question_data = {null, null, null, null, null};
-
+    private boolean new_method = false;
     @Override
     public void onAccessibilityEvent(AccessibilityEvent event) {
-        old_method(event);
-        /*new_method(getRootInActiveWindow());*/
+        if(new_method){
+            print_tree(getRootInActiveWindow(), 0);
+            log("USING NEW METHOD");
+            new_method(getRootInActiveWindow());
+        } else {
+            log("USING OLD METHOD");
+            old_method(event);
+        }
     }
 
     private boolean found_12s_or_10s = false;
@@ -109,7 +115,7 @@ public class MyAccessibilityService extends AccessibilityService {
     }
 
     // TODO Finding a certain element
-    /*private boolean stop = false;
+    private boolean stop = false;
     private void print_tree(AccessibilityNodeInfo nodeInfo, int depth) {
         if (nodeInfo == null) return;
 
@@ -127,10 +133,10 @@ public class MyAccessibilityService extends AccessibilityService {
         else
             return;
 
-        try{
-            if(nodeInfo.getText().toString().contains("s"))
+        /*try{
+            if(nodeInfo.getText().toString().contains("12s"))
                 stop = true;
-        } catch(Exception ignored){}
+        } catch(Exception ignored){}*/
 
         for (int i = 0; i < nodeInfo.getChildCount(); ++i) {
             if(!stop)
@@ -138,7 +144,7 @@ public class MyAccessibilityService extends AccessibilityService {
             else
                 return;
         }
-    }*/
+    }
 
     private void log(Object log) {
         Log.i("HH", String.valueOf(log));
