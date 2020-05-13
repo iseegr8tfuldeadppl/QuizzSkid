@@ -86,7 +86,7 @@ public class FloatingViewService extends Service{
             @Override
             public void run() {
                 try {
-                    String[] prefixes = {""," wikipedia "};
+                    String[] prefixes = {"", " ar.wikipedia.com ", " jawbni.com "}; // TODO changed
                     for(String prefix:prefixes){
                         Document document = Jsoup.connect(question_link + prefix).get();
 
@@ -94,15 +94,15 @@ public class FloatingViewService extends Service{
 
                         List<String> links = get_all_links_from_this_google_search(document);
 
-                        int index = -1;
+                        /*int index = -1;*/
                         for(String link:links) {
 
-                            if(!new_method){
+                            /*if(!new_method){
                                 // only take the first five websites of the google search
                                 index ++;
                                 if(index>5)
                                     break;
-                            }
+                            }*/
 
                             if(intentnig!=null)
                                 other_page_scraper(link);
@@ -220,7 +220,7 @@ public class FloatingViewService extends Service{
             @Override
             public void onPageFinished(WebView view, String url) {
                 super.onPageFinished(browser, url);
-                Log.i("HH", "finished loading, don't remove this webviewclient he allows pages to finish loading");
+                log("finished loading, don't remove this webviewclient he allows pages to finish loading");
 
             }
         });
@@ -338,11 +338,26 @@ public class FloatingViewService extends Service{
     private int[] count_occurances_of_the_answers_in_google_by_splitting_their_words_for_more_accuracy(String html) {
         int[] counts = {0, 0, 0, 0};
         for(int i=0; i<answers.length; i++){
+            List<Integer> each_word_occurrance = new ArrayList<>();
             String[] words_of_this_answer = answers[i].split(" ");
             for(String word:words_of_this_answer){
-                if(word.length()>1)
-                    counts[i] += count_its_occurances(html, word);
+                if(word.length()>1){
+                    each_word_occurrance.add(count_its_occurances(html, word));
+                }
             }
+            boolean all_words_were_there = true;
+            for(int count_of_a_word:each_word_occurrance){
+                if(count_of_a_word==0){
+                    all_words_were_there = false;
+                    break;
+                }
+            }
+            if(all_words_were_there){
+                for(int count_of_a_word:each_word_occurrance){
+                    counts[i] += count_of_a_word;
+                }
+            }
+
         }
         return counts;
     }
@@ -598,26 +613,13 @@ public class FloatingViewService extends Service{
                     color_most_common(largest, true);
                     color_least_common(tiniest, true);
                 } else {
-                    if (new_method) {
-                        String count = countdisplays.get(answer).getText().toString();
-                        countdisplays.get(answer).setText(String.valueOf(occurances+Integer.parseInt(count)));
-                        int[] total_for_each_answer = get_total_for_each_answer();
-                        int largest = get_largest(total_for_each_answer);
-                        int tiniest = get_tiniest(total_for_each_answer);
-                        color_most_common(largest, false);
-                        color_least_common(tiniest, false);
-
-                    } else {
-                        String count = countdisplays.get(answer).getText().toString();
-                        countdisplays.get(answer).setText(String.valueOf(occurances+Integer.parseInt(count)));
-
-                        int[] total_for_each_answer = get_total_for_each_answer();
-                        int largest = get_largest(total_for_each_answer);
-                        int tiniest = get_tiniest(total_for_each_answer);
-
-                        color_most_common(largest, false);
-                        color_least_common(tiniest, false);
-                    }
+                    String count = countdisplays.get(answer).getText().toString();
+                    countdisplays.get(answer).setText(String.valueOf(occurances+Integer.parseInt(count)));
+                    int[] total_for_each_answer = get_total_for_each_answer();
+                    int largest = get_largest(total_for_each_answer);
+                    int tiniest = get_tiniest(total_for_each_answer);
+                    color_most_common(largest, false);
+                    color_least_common(tiniest, false);
                 }
 
             } else {
@@ -798,26 +800,6 @@ public class FloatingViewService extends Service{
             }
         }
     }
-
-    // this is for logging
-    /*private void log(Object log){
-        Log.i("HH", String.valueOf(log));
-    }
-    private void logAll() {
-        log("addedview " + addedview);
-        log("running " + running);
-        log("intentnig " + intentnig);
-        log("question " + question.getText().toString());
-        log("answers[0] " + answers[0]);
-        log("answers[1] " + answers[1]);
-        log("answers[2] " + answers[2]);
-        log("answers[3] " + answers[3]);
-        log("acount " + countdisplays.get(0).getText().toString());
-        log("bcount " + countdisplays.get(1).getText().toString());
-        log("ccount " + countdisplays.get(2).getText().toString());
-        log("dcount " + countdisplays.get(3).getText().toString());
-
-    }*/
 
     private Handler update_timestamp = new Handler(new Handler.Callback() {
         @Override

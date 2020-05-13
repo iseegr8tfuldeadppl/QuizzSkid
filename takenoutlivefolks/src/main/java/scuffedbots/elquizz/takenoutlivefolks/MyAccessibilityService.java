@@ -13,12 +13,12 @@ import android.view.accessibility.AccessibilityNodeInfo;
 public class MyAccessibilityService extends AccessibilityService {
 
     private String[] question_data = {null, null, null, null, null};
-    private boolean new_method = false;
+    private boolean new_method = true;
     @Override
     public void onAccessibilityEvent(AccessibilityEvent event) {
         if(new_method){
-            print_tree(getRootInActiveWindow(), 0);
-            log("USING NEW METHOD");
+            /*print_tree(getRootInActiveWindow(), 0);*/
+            /*log("USING NEW METHOD");*/
             new_method(getRootInActiveWindow());
         } else {
             log("USING OLD METHOD");
@@ -26,38 +26,71 @@ public class MyAccessibilityService extends AccessibilityService {
         }
     }
 
+    private boolean gofun_true_live_false = false;
     private boolean found_12s_or_10s = false;
     private void new_method(AccessibilityNodeInfo root) {
         if (root == null)
             return;
 
         try{
-            if(!found_12s_or_10s){
-                String timestamp = root
-                        .getChild(0)
-                        .getChild(0)
-                        .getChild(0)
-                        .getChild(0)
-                        .getChild(0)
-                        .getChild(1)
-                        .getChild(0)
-                        .getChild(1)
-                        .getChild(0)
-                        .getChild(1)
-                        .getChild(0)
-                        .getChild(2)
-                        .getChild(0)
-                        .getText()
-                        .toString();
-                /*log(timestamp);
-                if(android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N){
-                    if(timestamp.equals("10s"))
-                        found_12s_or_10s = true;
-                } else {*/
-                log(timestamp);
-                    if(timestamp.equals("12s"))
-                        found_12s_or_10s = true;
-                /*}*/
+            try{
+                if(!found_12s_or_10s){
+                    String timestamp = root
+                            .getChild(0)
+                            .getChild(0)
+                            .getChild(0)
+                            .getChild(0)
+                            .getChild(0)
+                            .getChild(1)
+                            .getChild(0) // the guy
+                            .getChild(1)
+
+                            .getChild(0)
+
+                            .getChild(1) // the guy
+                            .getChild(0) // the guy
+                            .getChild(2)
+                            .getChild(0)
+                            .getText()
+                            .toString();
+                    if(android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N){
+                        if(timestamp.equals("10s"))
+                            found_12s_or_10s = true;
+                    } else {
+                        if(timestamp.equals("12s"))
+                            found_12s_or_10s = true;
+                    }
+                }
+
+                gofun_true_live_false = true;
+            } catch(Exception ignored){
+                // Live ElQuizz Method
+                if(!found_12s_or_10s){
+                    String timestamp = root
+                            .getChild(0)
+                            .getChild(0)
+                            .getChild(0)
+                            .getChild(0)
+                            .getChild(0)
+                            .getChild(1)
+                            .getChild(1)
+
+                            .getChild(0)
+
+                            .getChild(2)
+                            .getChild(0)
+                            .getText()
+                            .toString();
+                    if(android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N){
+                        if(timestamp.equals("10s"))
+                            found_12s_or_10s = true;
+                    } else {
+                        if(timestamp.equals("12s"))
+                            found_12s_or_10s = true;
+                    }
+                }
+
+                gofun_true_live_false = false;
             }
 
             if(found_12s_or_10s){
@@ -67,18 +100,32 @@ public class MyAccessibilityService extends AccessibilityService {
     }
 
     private void new_treat_question(AccessibilityNodeInfo root) {
-        root = root
-                .getChild(0)
-                .getChild(0)
-                .getChild(0)
-                .getChild(0)
-                .getChild(0)
-                .getChild(1)
-                .getChild(0)
-                .getChild(1)
-                .getChild(0)
-                .getChild(1)
-                .getChild(0);
+
+        if(gofun_true_live_false){
+            root = root.getChild(0)
+                        .getChild(0)
+                        .getChild(0)
+                        .getChild(0)
+                        .getChild(0)
+                        .getChild(1)
+                        .getChild(0) // the guy
+                        .getChild(1)
+
+                        .getChild(0)
+
+                        .getChild(1) // the guy
+                        .getChild(0); // the guy
+        } else {
+            root = root.getChild(0)
+                        .getChild(0)
+                        .getChild(0)
+                        .getChild(0)
+                        .getChild(0)
+                        .getChild(1)
+                        .getChild(1)
+
+                        .getChild(0);
+        }
 
         CharSequence[] samples = {null, null, null, null, null};
         samples[0] = root.getChild(3).getText();
@@ -99,9 +146,8 @@ public class MyAccessibilityService extends AccessibilityService {
                 send_newquestion();
             }
 
-            found_12s_or_10s = false;
         } else {
-            Log.i("HH", "stuff isn't fully in yet");
+            /*log("stuff isn't fully in yet");*/
         }
 
     }
@@ -133,10 +179,10 @@ public class MyAccessibilityService extends AccessibilityService {
         else
             return;
 
-        /*try{
+        try{
             if(nodeInfo.getText().toString().contains("12s"))
                 stop = true;
-        } catch(Exception ignored){}*/
+        } catch(Exception ignored){}
 
         for (int i = 0; i < nodeInfo.getChildCount(); ++i) {
             if(!stop)
@@ -191,7 +237,7 @@ public class MyAccessibilityService extends AccessibilityService {
     }
 
     private boolean is_a_valid_textview(AccessibilityNodeInfo source) {
-        int level = source.getChildCount();
+        /*int level = source.getChildCount();*/
         return source.getClassName().equals(getString(R.string.textview_package)) && source.getText()!=null && !source.getText().toString().isEmpty();
     }
 
@@ -209,6 +255,7 @@ public class MyAccessibilityService extends AccessibilityService {
                 intent2.putExtras(b);
                 getApplicationContext().sendBroadcast(intent2);
                 question_data = new String[]{null, null, null, null, null};
+                found_12s_or_10s = false;
 
             }
         }).start();

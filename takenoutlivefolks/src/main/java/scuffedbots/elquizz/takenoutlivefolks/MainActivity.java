@@ -61,6 +61,7 @@ public class MainActivity extends AppCompatActivity {
 
         return false;
     }
+
     private void protected_apps_request() {
         try{
             Intent intent = new Intent();
