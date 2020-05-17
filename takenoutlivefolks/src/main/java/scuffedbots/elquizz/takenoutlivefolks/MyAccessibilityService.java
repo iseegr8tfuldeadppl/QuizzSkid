@@ -13,9 +13,12 @@ import android.view.accessibility.AccessibilityNodeInfo;
 public class MyAccessibilityService extends AccessibilityService {
 
     private String[] question_data = {null, null, null, null, null};
-    private boolean new_method = true;
+    private boolean new_method = false;
     @Override
     public void onAccessibilityEvent(AccessibilityEvent event) {
+
+        new_method = android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N;
+
         if(new_method){
             /*print_tree(getRootInActiveWindow(), 0);*/
             /*log("USING NEW METHOD");*/
