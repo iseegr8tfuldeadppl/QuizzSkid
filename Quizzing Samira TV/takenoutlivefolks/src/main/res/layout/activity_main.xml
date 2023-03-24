@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity"
+    android:background="@android:color/black">
+
+    <LinearLayout
+        android:gravity="center"
+        android:layout_gravity="center"
+        android:layout_marginStart="@dimen/main_activity_button_holder_side_margins"
+        android:layout_marginEnd="@dimen/main_activity_button_holder_side_margins"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <!--Note-->
+        <TextView
+            android:textColor="@android:color/white"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="33sp"
+            android:gravity="center"
+            android:text="@string/you_re_set"
+            android:layout_marginBottom="35dp"/>
+        <!--Note-->
+        <TextView
+            android:textColor="@android:color/white"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="24sp"
+            android:gravity="center"
+            android:text="@string/works_best_on_arabic_mode_elquizz"
+            android:layout_marginBottom="35dp"/>
+
+        <!--Override Huawei Battery Protection-->
+        <Button
+            android:paddingTop="15dp"
+            android:paddingBottom="15dp"
+            android:textColor="@android:color/black"
+            android:background="@drawable/darkbuttons"
+            android:id="@+id/overridehuaweipermission"
+            android:layout_width="match_parent"
+            android:onClick="overridebatteryClicked"
+            android:layout_height="wrap_content"
+            android:text="@string/override_huawei_battery_protection"/>
+
+        <!--Manual Question-->
+        <!--<FrameLayout
+            android:layout_marginTop="20dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <EditText
+                android:id="@+id/link"
+                android:hint="@string/type_a_question"
+                android:paddingTop="17dp"
+                android:paddingBottom="17dp"
+                android:paddingStart="3dp"
+                android:paddingEnd="3dp"
+                android:background="@drawable/circle_edittext"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+            <Button
+                android:background="@drawable/buttons"
+                android:textColor="@color/white"
+                android:text="@string/search"
+                android:layout_gravity="end|center_vertical"
+                android:onClick="searchClicked"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="4dp"/>
+        </FrameLayout>-->
+
+    </LinearLayout>
+
+</FrameLayout>
