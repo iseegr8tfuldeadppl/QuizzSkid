@@ -1,0 +1,40 @@
+
+
+add 
+JAVA_HOME
+WRONG VERSION DUDE JUST INSTALL JDK 1.8 (named jdk-8u202-windows-x64.exe) FROM HERE https://www.oracle.com/java/technologies/javase/javase8-archive-downloads.html
+C:\Program Files\Java\jdk1.6.0_45
+to system env
+
+add
+ANDROID_SWT
+C:\Users\kream\AppData\Local\Android\Sdk\tools\lib\x86_64
+to system env
+
+add
+ANDROID_HOME
+C:\Users\kream\AppData\Local\Android\Sdk
+
+
+
+open a cmd go here
+cd C:\Users\kream\AppData\Local\Android\Sdk\tools\bin
+then execute this in cmd 
+uiautomatorviewer.bat
+
+
+
+
+
+DEBUGGING:
+i had a lotta execution issues and reinstalling windows + installing the jdk mentioned above fixed the issue (uninstall all other jdks and jres through windows remove page (ur favorite one where u search remove in task bar) also remove all paths in system env including JAVA_HOME, ANDROID_HOME, all ovem)
+
+
+HELP: (resources)
+check chrome bookmarks for a folder called quizzing
+
+https://www.reddit.com/r/java/comments/11axmc/error_no_suitable_java_found/
+
+or this github
+https://github.com/openatx/uiautomator2
+right click the page and click translate to english
