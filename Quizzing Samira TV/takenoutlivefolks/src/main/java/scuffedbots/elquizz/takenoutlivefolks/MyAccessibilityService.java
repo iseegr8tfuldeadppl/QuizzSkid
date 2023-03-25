@@ -356,7 +356,7 @@ public class MyAccessibilityService extends AccessibilityService {
             info.flags |= AccessibilityServiceInfo.FLAG_RETRIEVE_INTERACTIVE_WINDOWS;
         }
 
-        info.notificationTimeout = 1000; // 500 worked, 100 worked too, 1000 might be slower, also in the first time i made this code it was set to zero wtf
+        info.notificationTimeout = 100; // 500 worked, 100 worked too, 1000 might be slower, also in the first time i made this code it was set to zero wtf
 
         this.setServiceInfo(info);
     }

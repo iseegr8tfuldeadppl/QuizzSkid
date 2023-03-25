@@ -22,6 +22,8 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
+import android.webkit.JavascriptInterface;
+import android.webkit.ValueCallback;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.FrameLayout;
@@ -92,10 +94,10 @@ public class FloatingViewService extends Service{
 
                         treat_this_html(document.body().text(), true);
 
-                        List<String> links = get_all_links_from_this_google_search(document);
+                        //List<String> links = get_all_links_from_this_google_search(document);
 
                         /*int index = -1;*/
-                        for(String link:links) {
+                        //for(String link:links) {
 
                             /*if(!new_method){
                                 // only take the first five websites of the google search
@@ -104,11 +106,11 @@ public class FloatingViewService extends Service{
                                     break;
                             }*/
 
-                            if(intentnig!=null)
-                                other_page_scraper(link);
-                            else
-                                return;
-                        }
+                        //    if(intentnig!=null)
+                        //        other_page_scraper(link);
+                        //    else
+                        //        return;
+                        //}
                     }
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -120,10 +122,13 @@ public class FloatingViewService extends Service{
     private List<String> get_all_links_from_this_google_search(Document document) {
         List<String> links = new ArrayList<>();
         //Get the logo source of the website
-        Elements linkHolders = document.select(getString(R.string.div));
+        Elements linkHolders = document.select("a");
         for(Element linkHolder:linkHolders){
-            if(linkHolder.className().equals(getString(R.string.g))){
-                String link = linkHolder.selectFirst(getString(R.string.a)).absUrl(getString(R.string.href));
+            //Log.i("HH", linkHolder.tagName());
+            //Log.i("HH", "class " + linkHolder.className());
+            if(linkHolder.className().equals("cz3goc BmP5tf")){
+                String link = linkHolder.absUrl(getString(R.string.href)); // .selectFirst(getString(R.string.a))
+                //Log.i("Hh", "link " + link);
                 if(not_a_link_we_dont_want(link)){
                     links.add(link);
                 }
@@ -142,8 +147,10 @@ public class FloatingViewService extends Service{
     }
 
     private boolean not_a_link_we_dont_want(String link) {
-        return !(link.contains(getString(R.string.youtube)) || link.contains(getString(R.string.dailymotion)) || link.contains(getString(R.string.facebook))
-                || link.contains(getString(R.string.facebook2)));
+        return !(link.contains(getString(R.string.youtube)) || link.contains(getString(R.string.dailymotion))
+                //|| link.contains(getString(R.string.facebook))
+                //|| link.contains(getString(R.string.facebook2))
+        );
     }
 
     private void start_countdown() {
@@ -192,6 +199,18 @@ public class FloatingViewService extends Service{
         }
     }
 
+    private void wait_5_seconds() {
+        long futuretime = System.currentTimeMillis() + 5000;
+
+        while (System.currentTimeMillis() < futuretime && running) {
+            synchronized (this) {
+                try {
+                    wait(futuretime - System.currentTimeMillis());
+                } catch(Exception ignored){}
+            }
+        }
+    }
+
     private void update_timestamp(String timestamp) {
         timestamps.setText(timestamp);
     }
@@ -218,12 +237,84 @@ public class FloatingViewService extends Service{
         /*DONT DELETE ME*/page_load_ensurance();
     }
 
-    private void page_load_ensurance() {
+
+    class MyJavaScriptInterface {
+
+        private Context ctx;
+
+        MyJavaScriptInterface(Context ctx) {
+            this.ctx = ctx;
+        }
+
+        @JavascriptInterface
+        public void showHTML(String html) {
+            //Log.i("HH", "html " + html);
+            Document doc = Jsoup.parse(html);
+
+            treat_this_html(html, true);
+
+
+            List<String> links = new ArrayList<>();
+            Elements all = doc.select("a");
+            for(Element linkHolder:all){
+                if(linkHolder.className().equals("cz3goc BmP5tf")){
+                    String link = linkHolder.absUrl(getString(R.string.href)); // .selectFirst(getString(R.string.a))
+                    Log.i("Hh", "link " + link);
+                    links.add(link);
+                    //if(not_a_link_we_dont_want(link)){
+                    //    links.add(link);
+                    //}
+                }
+            }
+
+            for(String link:links) {
+
+                /*if(!new_method){
+                    // only take the first five websites of the google search
+                    index ++;
+                    if(index>5)
+                        break;
+                }*/
+
+                if(intentnig!=null)
+                    other_page_scraper(link);
+                else
+                    return;
+            }
+
+            //String[] parts = html.split("\"urls\":");
+            //for(String part: parts){
+//
+            //          }
+            //new AlertDialog.Builder(ctx).setTitle("HTML").setMessage(html)
+            //        .setPositiveButton(android.R.string.ok, null).setCancelable(false).create().show();
+        }
+
+    }
+
+    private void page_load_ensurance() { // https://stackoverflow.com/questions/8200945/how-to-get-html-content-from-a-webview
+        browser.getSettings().setJavaScriptEnabled(true);
+        browser.addJavascriptInterface(new MyJavaScriptInterface(this), "HtmlViewer");
         browser.setWebViewClient(new WebViewClient() {
             @Override
             public void onPageFinished(WebView view, String url) {
                 super.onPageFinished(browser, url);
                 log("finished loading, don't remove this webviewclient he allows pages to finish loading");
+                browser.loadUrl("javascript:HtmlViewer.showHTML" +
+                        "('<html>'+document.getElementsByTagName('html')[0].innerHTML+'</html>');");
+                /*
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        //wait_1_second();
+                        handler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                            }
+                        });
+                    }
+                }).start();
+                 */
 
             }
         });
@@ -334,6 +425,7 @@ public class FloatingViewService extends Service{
     }
 
 
+    private Handler handler = new Handler();
     private void log(Object log) {
         Log.i("HH", String.valueOf(log));
     }
