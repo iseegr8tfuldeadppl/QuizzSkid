@@ -206,6 +206,9 @@ public class FloatingViewService extends Service{
         // debugging tool
         Thread.setDefaultUncaughtExceptionHandler(new TopExceptionHandler());
 
+        Log.i("HH", "i'm up");
+        print("i'm up");
+
         createNotification();
         createWindowManager();
         createLayoutParams();

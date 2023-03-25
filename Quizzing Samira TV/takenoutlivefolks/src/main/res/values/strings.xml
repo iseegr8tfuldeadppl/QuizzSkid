@@ -36,7 +36,7 @@
     <string name="facebook">facebook.</string>
     <string name="facebook2">fb.com</string>
     <string name="s">s</string>
-    <string name="target_package">com.elquiz.app.prod</string>
+    <string name="target_package">dz.railtelecom.quiz</string>
     <string name="textview_package">android.widget.TextView</string>
     <string name="twelve">12s</string>
     <string name="restart">RESTART</string>

@@ -26,6 +26,15 @@ uiautomatorviewer.bat
 
 
 
+i have to change the package name in two places in my app, inside strings.xml and inside the xml/accessibility.xml file too just try to do a full project search for the previous package name of the app for example dz.railtelecom.quiz or com.elquiz.app.prod
+you can also just test on ur own apps to see if the accessibility is working and not their app preventing it
+
+
+
+when launching the app:
+always make sure that it toasts print a "i'm up" string signifying that the front service has been launched
+or just check in notifications bar if it's showing "elquizz rapist is lurking"
+
 DEBUGGING:
 i had a lotta execution issues and reinstalling windows + installing the jdk mentioned above fixed the issue (uninstall all other jdks and jres through windows remove page (ur favorite one where u search remove in task bar) also remove all paths in system env including JAVA_HOME, ANDROID_HOME, all ovem)
 

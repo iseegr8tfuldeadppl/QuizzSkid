@@ -1,8 +1,8 @@
 <accessibility-service android:accessibilityEventTypes="typeWindowContentChanged|typeWindowStateChanged|typeWindowsChanged"
-    android:packageNames="com.elquiz.app.prod"
+    android:packageNames="dz.railtelecom.quiz"
     android:accessibilityFeedbackType="feedbackGeneric"
     android:settingsActivity="com.example.android.apis.accessibility.TestBackActivity"
     android:canRetrieveWindowContent="true"
-    android:notificationTimeout="0"
+    android:notificationTimeout="500"
     android:accessibilityFlags="flagDefault|flagIncludeNotImportantViews|flagReportViewIds|flagRequestEnhancedWebAccessibility|flagRetrieveInteractiveWindows"
     xmlns:android="http://schemas.android.com/apk/res/android" />

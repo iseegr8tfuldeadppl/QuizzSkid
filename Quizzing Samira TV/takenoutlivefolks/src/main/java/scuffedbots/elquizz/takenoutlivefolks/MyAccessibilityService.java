@@ -9,6 +9,8 @@ import android.util.Log;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityNodeInfo;
 
+import java.util.Objects;
+
 
 public class MyAccessibilityService extends AccessibilityService {
 
@@ -18,40 +20,152 @@ public class MyAccessibilityService extends AccessibilityService {
         // TODO: incase we need to make it work for huawei p9 lite
         //new_method = android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N;
 
+        //Log.i("HH", "ayoo");
         new_method(getRootInActiveWindow());
     }
 
     private boolean competition_detected = false;
     private void new_method(AccessibilityNodeInfo root) {
+        //Log.i("HH", "dude " + root);
         if (root == null)
             return;
 
+        //Log.i("HH", "we getting updates");
         try{
+            Log.i("HH", "competition_detected " + competition_detected);
             if(!competition_detected){
+
+                // test element for now we using the top winners page temporarily, i'll add another comment once i move to the final one
+                /*print_tree(root
+                        .getChild(0)
+                        .getChild(0)
+                        .getChild(0)
+                        .getChild(0)
+                        .getChild(0)
+                        .getChild(0)
+                        .getChild(0)
+                        .getChild(2), 0);*/
+                // test element for now we using the top winners page temporarily, i'll add another comment once i move to the final one
+                // TEST ELEMENT:
                 String timestamp = root
                         .getChild(0)
                         .getChild(0)
                         .getChild(0)
                         .getChild(0)
                         .getChild(0)
-                        .getChild(1)
-                        .getChild(1)
-
+                        .getChild(0)
                         .getChild(0)
 
                         .getChild(2)
-                        .getChild(0)
-                        .getText()
+                        .getContentDescription()
                         .toString();
+                // OFFICIAL ELEMENT
 
-                // TODO: ur indicator goes here
-                // then set competition_detected to true
-            }
+                boolean testing = false;
+                // (testing && timestamp.equals("0")) || (testing && timestamp.equals("1")) ||
+                if(timestamp.equals("0") || timestamp.equals("1") || timestamp.equals("2") || timestamp.equals("3") // we avoided comparing with 0 and 1 because there is another ranking top winners page that has the number 1 which may conflict with this page, plus we don't even care if it is equal to 1 anyways we will detect the page well over that
+                        || timestamp.equals("4") || timestamp.equals("5") || timestamp.equals("6") || timestamp.equals("7")
+                        || timestamp.equals("8") || timestamp.equals("9") || timestamp.equals("10")
+                        || timestamp.equals("12")){
 
-            if(competition_detected){
-                new_treat_question(root);
+                    Log.i("HH", "timestamp " + timestamp);
+                    competition_detected = true; // if it didn't crash then yep we detected the counter
+
+                    // TODO: ur indicator goes here
+                    // then set competition_detected to true
+
+                    //Log.i("HH", "ayooo found the number: " + timestamp);
+                    //new_treat_question(root);
+                    //if((testing && timestamp.equals("0")) || (testing && timestamp.equals("1"))){
+                    try {
+                        question_data[0] = root
+                                .getChild(0)
+                                .getChild(0)
+                                .getChild(0)
+                                .getChild(0)
+                                .getChild(0)
+                                .getChild(0)
+                                .getChild(0)
+
+                                .getChild(3)
+                                .getContentDescription()
+                                .toString();
+                        question_data[1] = root
+                                .getChild(0)
+                                .getChild(0)
+                                .getChild(0)
+                                .getChild(0)
+                                .getChild(0)
+                                .getChild(0)
+                                .getChild(0)
+
+                                .getChild(4)
+                                .getContentDescription()
+                                .toString();
+                        question_data[2] = root
+                                .getChild(0)
+                                .getChild(0)
+                                .getChild(0)
+                                .getChild(0)
+                                .getChild(0)
+                                .getChild(0)
+                                .getChild(0)
+
+                                .getChild(5)
+                                .getContentDescription()
+                                .toString();
+                        question_data[3] = root
+                                .getChild(0)
+                                .getChild(0)
+                                .getChild(0)
+                                .getChild(0)
+                                .getChild(0)
+                                .getChild(0)
+                                .getChild(0)
+
+                                .getChild(6)
+                                .getContentDescription()
+                                .toString();
+                        question_data[4] = root
+                                .getChild(0)
+                                .getChild(0)
+                                .getChild(0)
+                                .getChild(0)
+                                .getChild(0)
+                                .getChild(0)
+                                .getChild(0)
+
+                                .getChild(7)
+                                .getContentDescription()
+                                .toString();
+
+                        // weird if statement ik just read on
+                        // TESTING PAGE: i'm using the top winners page as a tester, but one of the elements that have the same position as the question is the number 2 thing so just go into test mode if we detected that
+                        if(Objects.equals(question_data[0], "2")){
+                            question_data[0] = "الدوبارة اكلة شعبية معروفة في أي ولاية ؟";
+                            question_data[1] = "البليدة";
+                            question_data[2] = "سكيكدة";
+                            question_data[3] = "بسكرة";
+                            question_data[4] = "البيض";
+                        }
+                    } catch(Exception e){
+                        e.printStackTrace();
+                        Log.i("HH", "error inside: " + e.toString());
+                        question_data[0] = "الدوبارة اكلة شعبية معروفة في أي ولاية ؟";
+                        question_data[1] = "البليدة";
+                        question_data[2] = "سكيكدة";
+                        question_data[3] = "بسكرة";
+                        question_data[4] = "البيض";
+                    }
+                    send_newquestion();
+                }
             }
-        } catch(Exception ignored){}
+        } catch(Exception e){
+            competition_detected = false;
+
+            Log.i("HH", "found error : " + e);
+            e.printStackTrace();
+        }
     }
 
     private void new_treat_question(AccessibilityNodeInfo root) {
@@ -104,7 +218,7 @@ public class MyAccessibilityService extends AccessibilityService {
     }
 
     // TODO Finding a certain element
-    private boolean stop = false;
+    //private boolean stop = false;
     private void print_tree(AccessibilityNodeInfo nodeInfo, int depth) {
         if (nodeInfo == null) return;
 
@@ -114,24 +228,25 @@ public class MyAccessibilityService extends AccessibilityService {
             logString += " ";
         }
 
-        if(!stop){
+        //if(!stop){
             logString += "Text: " + nodeInfo.getText() + " " + " Content-Description: " + nodeInfo.getContentDescription();
 
             log(logString);
-        }
-        else
-            return;
+        //}
+        //else
+        //    return;
 
         try{
-            if(nodeInfo.getText().toString().contains("12s"))
-                stop = true;
+            //if(nodeInfo.getText().toString().contains("12s"))
+            //    stop = true;
         } catch(Exception ignored){}
 
         for (int i = 0; i < nodeInfo.getChildCount(); ++i) {
-            if(!stop)
-                print_tree(nodeInfo.getChild(i), depth + 1);
-            else
-                return;
+            //if(!stop)
+
+            //print_tree(nodeInfo.getChild(i), depth + 1);
+            //else
+            //    return;
         }
     }
 
@@ -140,10 +255,10 @@ public class MyAccessibilityService extends AccessibilityService {
     }
 
     // TODO OLD METHOD
-    private boolean start_recording_data = false;
-    private int index = 0;
+    //private boolean start_recording_data = false;
+    //private int index = 0;
 
-    private void old_method(AccessibilityEvent event) {
+    /*private void old_method(AccessibilityEvent event) {
         if (is_a_valid_textview(event.getSource())){
             String text = gettext(event.getSource());
             if(!is_anew_question(text)) {
@@ -151,22 +266,22 @@ public class MyAccessibilityService extends AccessibilityService {
                     treat_newquestion(text);
             }
         }
-    }
+    }*/
 
     private String gettext(AccessibilityNodeInfo source) {
         return source.getText().toString();
     }
 
-    private boolean is_anew_question(String text) {
+    /*private boolean is_anew_question(String text) {
         if(text.equals(getString(R.string.twelve))){
             start_recording_data = true;
             index = 0;
             return true;
         }
         return false;
-    }
+    }*/
 
-    private void treat_newquestion(String text) {
+    /*private void treat_newquestion(String text) {
         if (!(text.equals("أ") || text.equals("ب") || text.equals("ت") || text.equals("ث")
                 || text.equals("A") || text.equals("B") || text.equals("C") || text.equals("D"))) {
             question_data[index] = text;
@@ -177,12 +292,12 @@ public class MyAccessibilityService extends AccessibilityService {
             }
             index++;
         }
-    }
+    }*/
 
-    private boolean is_a_valid_textview(AccessibilityNodeInfo source) {
-        /*int level = source.getChildCount();*/
+    /*private boolean is_a_valid_textview(AccessibilityNodeInfo source) {
+        //int level = source.getChildCount();
         return source.getClassName().equals(getString(R.string.textview_package)) && source.getText()!=null && !source.getText().toString().isEmpty();
-    }
+    }*/
 
     private void send_newquestion() {
         new Thread(new Runnable() {
@@ -198,7 +313,7 @@ public class MyAccessibilityService extends AccessibilityService {
                 intent2.putExtras(b);
                 getApplicationContext().sendBroadcast(intent2);
                 question_data = new String[]{null, null, null, null, null};
-                found_12s_or_10s = false;
+                competition_detected = false;
 
             }
         }).start();
@@ -216,26 +331,33 @@ public class MyAccessibilityService extends AccessibilityService {
         // Default services are invoked only if no package-specific ones are present for the type of AccessibilityEvent generated.
         // This is a general-purpose service, so we will set some flags
         // We are keeping the timeout to 0 as we don’t need any delay or to pause our accessibility events
-        info.eventTypes = /*AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED
-                        | */AccessibilityEvent.TYPE_WINDOW_CONTENT_CHANGED;
+
+        info.eventTypes = AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED
+                | AccessibilityEvent.TYPE_WINDOW_CONTENT_CHANGED
+                | AccessibilityEvent.TYPE_VIEW_TEXT_CHANGED;
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             info.eventTypes |= AccessibilityEvent.TYPE_WINDOWS_CHANGED;
         }
+
         info.packageNames = new String[]{getString(R.string.target_package)};
-        /*info.feedbackType = AccessibilityServiceInfo.FEEDBACK_GENERIC;*/ // YOU HAVE TO INCLUDE IT IN SERVICECONFIG.XML FOR IT TO WORK
         info.feedbackType = AccessibilityServiceInfo.FEEDBACK_GENERIC; // YOU HAVE TO INCLUDE IT IN SERVICECONFIG.XML FOR IT TO WORK
+        //info.feedbackType = AccessibilityServiceInfo.FEEDBACK_ALL_MASK; // YOU HAVE TO INCLUDE IT IN SERVICECONFIG.XML FOR IT TO WORK
 
         info.flags = AccessibilityServiceInfo.DEFAULT
                 | AccessibilityServiceInfo.FLAG_INCLUDE_NOT_IMPORTANT_VIEWS;
 
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
+            info.flags |= AccessibilityServiceInfo.FLAG_REQUEST_ENHANCED_WEB_ACCESSIBILITY
+                    | AccessibilityServiceInfo.FLAG_REPORT_VIEW_IDS;
+        }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             info.flags |= AccessibilityServiceInfo.FLAG_RETRIEVE_INTERACTIVE_WINDOWS;
         }
-        /*| AccessibilityServiceInfo.FLAG_REQUEST_ENHANCED_WEB_ACCESSIBILITY | AccessibilityServiceInfo.FLAG_REPORT_VIEW_IDS*/
 
-        info.notificationTimeout = 0;
+        info.notificationTimeout = 1000; // 500 worked, 100 worked too, 1000 might be slower, also in the first time i made this code it was set to zero wtf
+
         this.setServiceInfo(info);
     }
 }

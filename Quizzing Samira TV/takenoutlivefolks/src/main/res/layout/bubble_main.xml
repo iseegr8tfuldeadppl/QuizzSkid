@@ -6,6 +6,7 @@
 
     <!--Browser-->
     <WebView
+        android:layout_marginTop="60dp"
         android:id="@+id/browser"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
@@ -49,7 +50,7 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
                 <TextView
-                    android:paddingStart="@dimen/answers_side_paddings"
+                    android:paddingStart="50dp"
                     android:paddingEnd="@dimen/answers_side_paddings"
                     android:background="@android:color/white"
                     android:textSize="@dimen/answer_text_size"
@@ -62,7 +63,7 @@
                     android:gravity="start"
                     android:id="@+id/a"/>
                 <TextView
-                    android:paddingStart="@dimen/answers_side_paddings"
+                    android:paddingStart="50dp"
                     android:paddingEnd="@dimen/answers_side_paddings"
                     android:background="@android:color/white"
                     android:textSize="@dimen/answer_text_size"
@@ -75,7 +76,7 @@
                     android:gravity="start"
                     android:id="@+id/b"/>
                 <TextView
-                    android:paddingStart="@dimen/answers_side_paddings"
+                    android:paddingStart="50dp"
                     android:paddingEnd="@dimen/answers_side_paddings"
                     android:background="@android:color/white"
                     android:textSize="@dimen/answer_text_size"
@@ -88,7 +89,7 @@
                     android:gravity="start"
                     android:id="@+id/c"/>
                 <TextView
-                    android:paddingStart="@dimen/answers_side_paddings"
+                    android:paddingStart="50dp"
                     android:paddingEnd="@dimen/answers_side_paddings"
                     android:background="@android:color/white"
                     android:textSize="@dimen/answer_text_size"
