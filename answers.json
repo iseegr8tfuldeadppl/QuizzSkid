@@ -1,0 +1,169 @@
+{
+  "_embedded" : {
+    "questions" : [ {
+      "content" : "متى إستقلت الجزائر ؟",
+      "correctAnswer" : 0,
+      "order" : 1,
+      "passed" : false,
+      "choices" : [ "1962", "1954", "1955", "1963" ],
+      "_links" : {
+        "self" : {
+          "href" : "http://quizzing.samiratv.net/questions/b52c27e5-ae87-4eb0-b687-6c3c846846da"
+        },
+        "question" : {
+          "href" : "http://quizzing.samiratv.net/questions/b52c27e5-ae87-4eb0-b687-6c3c846846da"
+        }
+      }
+    }, {
+      "content" : "المكون الأساسي للزجاج هو؟",
+      "correctAnswer" : 3,
+      "order" : 2,
+      "passed" : false,
+      "choices" : [ "الرخام ", "الحصى", "الزجاج", "الرمل" ],
+      "_links" : {
+        "self" : {
+          "href" : "http://quizzing.samiratv.net/questions/e53c567b-2e30-40f5-bc9d-cf07ab46bc49"
+        },
+        "question" : {
+          "href" : "http://quizzing.samiratv.net/questions/e53c567b-2e30-40f5-bc9d-cf07ab46bc49"
+        }
+      }
+    }, {
+      "content" : "مانوع الغاز الذي يمتصه النباتات؟",
+      "correctAnswer" : 2,
+      "order" : 3,
+      "passed" : false,
+      "choices" : [ "الأكسجين", "الهيدروجين", "تاني اكسيد الكربون", "الهيليوم" ],
+      "_links" : {
+        "self" : {
+          "href" : "http://quizzing.samiratv.net/questions/55d9e71f-b5f2-49e3-b7ef-05b4542437b6"
+        },
+        "question" : {
+          "href" : "http://quizzing.samiratv.net/questions/55d9e71f-b5f2-49e3-b7ef-05b4542437b6"
+        }
+      }
+    }, {
+      "content" : "ماهو أكبر التدييات ؟",
+      "correctAnswer" : 1,
+      "order" : 4,
+      "passed" : false,
+      "choices" : [ "الفيل", "الحوت الأزرق", "وحيد القرن", "فرس النهر" ],
+      "_links" : {
+        "self" : {
+          "href" : "http://quizzing.samiratv.net/questions/c8168b9b-9891-47d3-b2a0-0b153a061358"
+        },
+        "question" : {
+          "href" : "http://quizzing.samiratv.net/questions/c8168b9b-9891-47d3-b2a0-0b153a061358"
+        }
+      }
+    }, {
+      "content" : "من هو مؤسس ميكروسوفت؟",
+      "correctAnswer" : 3,
+      "order" : 5,
+      "passed" : false,
+      "choices" : [ "ستيف جوبس", "ايلون ماسك", "مارك زوكربيرغ", "بيل جيتس" ],
+      "_links" : {
+        "self" : {
+          "href" : "http://quizzing.samiratv.net/questions/16b92a5e-7647-41c2-968a-d17d8ab56863"
+        },
+        "question" : {
+          "href" : "http://quizzing.samiratv.net/questions/16b92a5e-7647-41c2-968a-d17d8ab56863"
+        }
+      }
+    }, {
+      "content" : "ماهي أكبر دولة في العام ؟",
+      "correctAnswer" : 3,
+      "order" : 6,
+      "passed" : false,
+      "choices" : [ "أمريكا ", "كندا", "السعودية", "روسيا" ],
+      "_links" : {
+        "self" : {
+          "href" : "http://quizzing.samiratv.net/questions/77048135-3501-4901-8b43-fc7f5339f742"
+        },
+        "question" : {
+          "href" : "http://quizzing.samiratv.net/questions/77048135-3501-4901-8b43-fc7f5339f742"
+        }
+      }
+    }, {
+      "content" : "أطول نهر في العالم ؟ ",
+      "correctAnswer" : 0,
+      "order" : 7,
+      "passed" : false,
+      "choices" : [ "النيل", "الدجلة ", "الأمازون ", "الكونغو" ],
+      "_links" : {
+        "self" : {
+          "href" : "http://quizzing.samiratv.net/questions/f7c02525-72ad-4e53-8d16-1e718cf36a28"
+        },
+        "question" : {
+          "href" : "http://quizzing.samiratv.net/questions/f7c02525-72ad-4e53-8d16-1e718cf36a28"
+        }
+      }
+    }, {
+      "content" : "ماهو عدد الدول العربية الموجودة في قارة افريقيا؟",
+      "correctAnswer" : 2,
+      "order" : 8,
+      "passed" : false,
+      "choices" : [ "8", "9", "10", "11" ],
+      "_links" : {
+        "self" : {
+          "href" : "http://quizzing.samiratv.net/questions/b29fb736-017b-4009-93eb-623d044c814a"
+        },
+        "question" : {
+          "href" : "http://quizzing.samiratv.net/questions/b29fb736-017b-4009-93eb-623d044c814a"
+        }
+      }
+    }, {
+      "content" : "ماذا يعني اسم لوس أنجلوس؟",
+      "correctAnswer" : 1,
+      "order" : 9,
+      "passed" : false,
+      "choices" : [ "مدينة النور ", " مدينة الملائكة", " ‏ مدينة الكنوز", " ‏ مدينة الحدائق" ],
+      "_links" : {
+        "self" : {
+          "href" : "http://quizzing.samiratv.net/questions/e1d65707-76e8-45dc-9737-c5b168e3fa7d"
+        },
+        "question" : {
+          "href" : "http://quizzing.samiratv.net/questions/e1d65707-76e8-45dc-9737-c5b168e3fa7d"
+        }
+      }
+    }, {
+      "content" : "ما هو اليوم المقصود به يوم الفرقان الذي ذكر في القرآن الكريم؟",
+      "correctAnswer" : 1,
+      "order" : 10,
+      "passed" : false,
+      "choices" : [ "يوم القيامة", "غزوة بدر", "غزوة أحد", "السراط " ],
+      "_links" : {
+        "self" : {
+          "href" : "http://quizzing.samiratv.net/questions/3d836cf6-13f9-48d3-9dc2-3d463a884fb2"
+        },
+        "question" : {
+          "href" : "http://quizzing.samiratv.net/questions/3d836cf6-13f9-48d3-9dc2-3d463a884fb2"
+        }
+      }
+    } ]
+  },
+  "_links" : {
+    "first" : {
+      "href" : "http://quizzing.samiratv.net/questions?page=0&size=20"
+    },
+    "prev" : {
+      "href" : "http://quizzing.samiratv.net/questions?page=0&size=20"
+    },
+    "self" : {
+      "href" : "http://quizzing.samiratv.net/questions{&sort}",
+      "templated" : true
+    },
+    "last" : {
+      "href" : "http://quizzing.samiratv.net/questions?page=1&size=20"
+    },
+    "profile" : {
+      "href" : "http://quizzing.samiratv.net/profile/questions"
+    }
+  },
+  "page" : {
+    "size" : 20,
+    "totalElements" : 30,
+    "totalPages" : 2,
+    "number" : 1
+  }
+}

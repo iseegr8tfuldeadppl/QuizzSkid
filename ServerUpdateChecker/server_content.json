@@ -1,0 +1,89 @@
+{
+  "_embedded" : {
+    "quizzes" : [ {
+      "title" : "2nd day ramadan Ramzi",
+      "launchDate" : "2023-03-25T16:00:00.000+0100",
+      "stateQuiz" : "CLOSED",
+      "maxFiftyJokers" : 0,
+      "maxSkipJokers" : 0,
+      "jokersThreshold" : 0,
+      "prize" : 0.0,
+      "_links" : {
+        "self" : {
+          "href" : "http://quizzing.samiratv.net/quizzes/df26bb93-2c15-472d-b103-7261580b8042"
+        },
+        "quiz" : {
+          "href" : "http://quizzing.samiratv.net/quizzes/df26bb93-2c15-472d-b103-7261580b8042"
+        },
+        "wins" : {
+          "href" : "http://quizzing.samiratv.net/quizzes/df26bb93-2c15-472d-b103-7261580b8042/wins"
+        },
+        "questionList" : {
+          "href" : "http://quizzing.samiratv.net/quizzes/df26bb93-2c15-472d-b103-7261580b8042/questionList"
+        }
+      }
+    }, {
+      "title" : "test quizzing App N1",
+      "launchDate" : "2023-03-26T00:00:00.000+0100",
+      "stateQuiz" : "CREATED",
+      "maxFiftyJokers" : 0,
+      "maxSkipJokers" : 0,
+      "jokersThreshold" : 0,
+      "prize" : 100000.0,
+      "_links" : {
+        "self" : {
+          "href" : "http://quizzing.samiratv.net/quizzes/4a19ea97-8132-4fa2-9c2e-96eee4b05b0e"
+        },
+        "quiz" : {
+          "href" : "http://quizzing.samiratv.net/quizzes/4a19ea97-8132-4fa2-9c2e-96eee4b05b0e"
+        },
+        "wins" : {
+          "href" : "http://quizzing.samiratv.net/quizzes/4a19ea97-8132-4fa2-9c2e-96eee4b05b0e/wins"
+        },
+        "questionList" : {
+          "href" : "http://quizzing.samiratv.net/quizzes/4a19ea97-8132-4fa2-9c2e-96eee4b05b0e/questionList"
+        }
+      }
+    }, {
+      "title" : "1st day quizzing Ramzi",
+      "launchDate" : "2023-03-23T20:19:59.000+0100",
+      "stateQuiz" : "CLOSED",
+      "maxFiftyJokers" : 0,
+      "maxSkipJokers" : 0,
+      "jokersThreshold" : 0,
+      "prize" : 300000.0,
+      "_links" : {
+        "self" : {
+          "href" : "http://quizzing.samiratv.net/quizzes/a2911c35-c9df-493e-97ac-9e28b15b4540"
+        },
+        "quiz" : {
+          "href" : "http://quizzing.samiratv.net/quizzes/a2911c35-c9df-493e-97ac-9e28b15b4540"
+        },
+        "wins" : {
+          "href" : "http://quizzing.samiratv.net/quizzes/a2911c35-c9df-493e-97ac-9e28b15b4540/wins"
+        },
+        "questionList" : {
+          "href" : "http://quizzing.samiratv.net/quizzes/a2911c35-c9df-493e-97ac-9e28b15b4540/questionList"
+        }
+      }
+    } ]
+  },
+  "_links" : {
+    "self" : {
+      "href" : "http://quizzing.samiratv.net/quizzes{?page,size,sort}",
+      "templated" : true
+    },
+    "profile" : {
+      "href" : "http://quizzing.samiratv.net/profile/quizzes"
+    },
+    "search" : {
+      "href" : "http://quizzing.samiratv.net/quizzes/search"
+    }
+  },
+  "page" : {
+    "size" : 20,
+    "totalElements" : 3,
+    "totalPages" : 1,
+    "number" : 0
+  }
+}

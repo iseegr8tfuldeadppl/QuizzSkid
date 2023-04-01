@@ -1,0 +1,9 @@
+{
+  "name": "projects/1028918836216/installations/dgrG8m6lQC6GG_JvPb8hD6",
+  "fid": "dgrG8m6lQC6GG_JvPb8hD6",
+  "refreshToken": "3_AS3qfwLFFHpmMZerG8R0Gv8IhJDqgZFkcU-TGBd_xD6XQQWin4gUowhxp6VtCtkxZ4cYrMSbDG2wyl03JXdv-60raC32gjbDwWeOAXWqPaCH4g",
+  "authToken": {
+    "token": "eyJhbGciOiJFUzI1NiIsInR5cCI6IkpXVCJ9.eyJhcHBJZCI6IjE6MTAyODkxODgzNjIxNjphbmRyb2lkOjljZTdjNjQ4M2Q1Y2JhMzdkYzM0MGQiLCJleHAiOjE2ODA0NTc2MTQsImZpZCI6ImRnckc4bTZsUUM2R0dfSnZQYjhoRDYiLCJwcm9qZWN0TnVtYmVyIjoxMDI4OTE4ODM2MjE2fQ.AB2LPV8wRQIhANHyzA8QHYHrV9NwrgV7M9YzbwiQySi83gnKwp2WyhSVAiAu2EKUt7Ze_mQ6-1X5nYrCccfxMtx5iPAoCeNA55C_Yw",
+    "expiresIn": "604800s"
+  }
+}

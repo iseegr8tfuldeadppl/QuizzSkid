@@ -1,0 +1,15 @@
+POST /v1/projects/quiz-app-d87d1/installations HTTP/1.1
+Content-Type: application/json
+Accept: application/json
+Content-Encoding: gzip
+Cache-Control: no-cache
+X-Android-Package: dz.railtelecom.quiz
+x-firebase-client: H4sIAAAAAAAAAFWRMW_CMBCF_0rkGTuODaGwtVK3dmGq1DA48YVaJDa6XFkQ_70XQiMYffe-5_fsi_gBh1SDo0Fsvy_CHSCS2Io2IMgmIVS50coqnbXdLxGgfNyotSqyY6IuxCovxpPOXPSYgpchDuS6DrDKsxvTNj0jVhXMeDiHBmSNrK5yBNf1MJN9iHLwR3bcTGQILDLMjTHGwV1Z5Xa26pOHrsp376vl69tHcQenDI5CigP7cUBlnpsg-Zo3WmlVrOYIJ2bahBz43z-6nhvvPr-sLe2zxa1YsVRGldmDJ7_bHJi46HBKSCx84fF6vokcHoCmvtaKhfCOYPwLYbSxUltpSrG_7hfiDDhwD_4cI65_TbcIpLkBAAA
+X-Android-Cert: 6EE2F7FB76E4A59FB5CFBA7FE7969B9E0BC42468
+x-goog-api-key: AIzaSyBxxkVFxXuvA01tJdgZ1tEGeG8-BPVX85E
+User-Agent: Dalvik/2.1.0 (Linux; U; Android 12; RMX3363 Build/RKQ1.210503.001)
+Host: firebaseinstallations.googleapis.com
+Connection: Keep-Alive
+Accept-Encoding: gzip
+Content-Length: 140
+
