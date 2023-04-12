@@ -4,7 +4,7 @@ import playsound #if playsound doesn't work then try this: pip install playsound
 import keyboard
 import json
 
-ping_period = 1*60 # pings server every 10 minutes
+ping_period = 10*60 # pings server every 10 minutes
 notify_sound_period = 2 # in seconds
 
 # shared between threads
@@ -61,7 +61,7 @@ def main():
                         notifying = True
                     else:
                         last_ping = time.time()
-                        print("Going to wait 1 minute")
+                        print("Going to wait 10 minutes")
                         time.sleep(ping_period)
 
         except Exception as e:
